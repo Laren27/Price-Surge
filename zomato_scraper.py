@@ -202,3 +202,26 @@ def save_to_csv(data, filepath="menu_prices.csv"):
     print(f"✅ Saved {len(data)} items to {filepath}")
 
 # ─────────────────────────────────────────────
+# ENTRY POINT
+
+if __name__ == "__main__":
+    all_data = []
+
+    for url, name, category in RESTAURANTS:
+        print(f"\n{'='*50}")
+        print(f"Scraping: {name} [{category}]")
+        print(f"{'='*50}")
+
+        items = fetch_live_pricing(url, name, category)
+        all_data.extend(items)
+
+        print(f"✅ {len(items)} unique items for {name}")
+        for item in items:
+            print(f"  {item['item_name']} -> {item['price']}")
+
+        if len(RESTAURANTS) > 1:
+            delay = random.uniform(5, 10)
+            print(f"Waiting {delay:.1f}s before next restaurant...")
+            time.sleep(delay)
+
+    save_to_csv(all_data)
