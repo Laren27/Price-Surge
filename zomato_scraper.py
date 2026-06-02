@@ -92,3 +92,14 @@ def fetch_live_pricing(url, restaurant_name, category):
         page = context.new_page()
         page.set_viewport_size({"width": 390, "height": 844})
 
+        # Check session
+        print("Checking session...")
+        page.goto("https://www.zomato.com", wait_until="domcontentloaded", timeout=30000)
+        time.sleep(2)
+
+        if not check_cookies_valid(page):
+            print("⚠️ Cookies expired — re-run save_cookies.py")
+            browser.close()
+            return []
+        print("✅ Session valid")
+
