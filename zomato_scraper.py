@@ -103,3 +103,8 @@ def fetch_live_pricing(url, restaurant_name, category):
             return []
         print("✅ Session valid")
 
+        # Load restaurant page
+        print(f"Loading menu for {restaurant_name}...")
+        page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        time.sleep(4)
+
