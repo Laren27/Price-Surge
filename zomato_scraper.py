@@ -120,3 +120,25 @@ def fetch_live_pricing(url, restaurant_name, category):
                 break
         time.sleep(3)
 
+        # Extract __PRELOADED_STATE__
+        preloaded_raw = page.evaluate(r"""
+            () => {
+                const match = document.documentElement.innerHTML
+                    .match(/window\.__PRELOADED_STATE__\s*=\s*JSON\.parse\("(.+?)"\);/s);
+                return match ? match[1] : null;
+            }
+        """)
+
+        if not preloaded_raw:
+            print(f"❌ __PRELOADED_STATE__ not found for {restaurant_name}")
+            page.screenshot(path=f"debug_{restaurant_name}.png", full_page=True)
+            browser.close()
+            return []
+
+        unescaped = preloaded_raw.encode('utf-8').decode('unicode_escape')
+        state = json.loads(unescaped)
+        raw_items = extract_items_recursive(state)
+        print(f"Raw items before dedup: {len(raw_items)}")
+
+        browser.close()
+
