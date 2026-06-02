@@ -3,6 +3,15 @@
 from playwright.sync_api import sync_playwright
 from datetime import datetime
 import time, json, random, csv, os
+from pathlib import Path
+
+# Builds the path relative to this script's location
+# src/scraping/zomato_scraper.py → go up 2 levels → project root → data/raw
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
+
+# Creates the folder automatically if it doesn't exist
+RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ─────────────────────────────────────────────
 # RESTAURANTS LIST
@@ -190,7 +199,9 @@ def fetch_live_pricing(url, restaurant_name, category):
 # ─────────────────────────────────────────────
 # SAVE TO CSV (append mode)
 
-def save_to_csv(data, filepath="menu_prices.csv"):
+def save_to_csv(data, filepath=None):
+    if filepath is None:
+        filepath = RAW_DATA_DIR / "menu_prices.csv"
     if not data:
         return
     file_exists = os.path.exists(filepath)
