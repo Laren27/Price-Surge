@@ -54,3 +54,41 @@ def check_cookies_valid(page):
     except Exception:
         return False
 
+def fetch_live_pricing(url, restaurant_name, category):
+    results = []
+
+    try:
+        with open("zomato_cookies.json") as f:
+            saved_cookies = json.load(f)
+    except FileNotFoundError:
+        print("❌ zomato_cookies.json not found — run save_cookies.py first")
+        return []
+
+    with sync_playwright() as p:
+        iphone = p.devices['iPhone 13 Pro']
+        browser = p.chromium.launch(
+            headless=False,
+            args=[
+                '--disable-blink-features=AutomationControlled',
+                '--disable-http2',
+            ]
+        )
+        context = browser.new_context(
+            **iphone,
+            locale="en-IN",
+            timezone_id="Asia/Kolkata",
+            permissions=["geolocation"],
+            geolocation={"latitude": 20.2961, "longitude": 85.8245},
+        )
+        context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+            Object.defineProperty(navigator, 'platform', { get: () => 'iPhone' });
+            Object.defineProperty(navigator, 'maxTouchPoints', { get: () => 5 });
+            window.chrome = undefined;
+        """)
+
+        context.add_cookies(saved_cookies)
+
+        page = context.new_page()
+        page.set_viewport_size({"width": 390, "height": 844})
+
