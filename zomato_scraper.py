@@ -38,3 +38,19 @@ RESTAURANTS = [
     ("https://www.zomato.com/bhubaneswar/kake-di-hatti-patia-bhubaneshwar/order", "Kake Di Hatti", "paneer"),
     ("https://www.zomato.com/bhubaneswar/kake-da-minar-chandrasekharpur-bhubaneshwar/order", "Kake Da Minar", "paneer"),
 ]
+
+# ─────────────────────────────────────────────
+# COOKIE CHECK
+
+def check_cookies_valid(page):
+    try:
+        return page.evaluate("""
+            () => document.cookie.split(';').some(c =>
+                c.trim().startsWith('zl=') ||
+                c.trim().startsWith('zomato_user') ||
+                c.trim().startsWith('PHPSESSID')
+            )
+        """)
+    except Exception:
+        return False
+
