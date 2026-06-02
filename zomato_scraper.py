@@ -108,3 +108,15 @@ def fetch_live_pricing(url, restaurant_name, category):
         page.goto(url, wait_until="domcontentloaded", timeout=60000)
         time.sleep(4)
 
+        # Scroll to bottom
+        print("Scrolling full menu...")
+        while True:
+            page.evaluate("window.scrollBy(0, 400)")
+            time.sleep(1.2)
+            pos = page.evaluate("window.scrollY")
+            height = page.evaluate("document.body.scrollHeight")
+            print(f"  {pos} / {height}")
+            if pos + 844 >= height:
+                break
+        time.sleep(3)
+
