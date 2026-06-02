@@ -161,3 +161,17 @@ def fetch_live_pricing(url, restaurant_name, category):
     return results
 
 # ─────────────────────────────────────────────
+# SAVE TO CSV (append mode)
+
+def save_to_csv(data, filepath="menu_prices.csv"):
+    if not data:
+        return
+    file_exists = os.path.exists(filepath)
+    with open(filepath, "a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["restaurant", "category", "item_name", "price", "scraped_at"])
+        if not file_exists:
+            writer.writeheader()
+        writer.writerows(data)
+    print(f"✅ Saved {len(data)} items to {filepath}")
+
+# ─────────────────────────────────────────────
