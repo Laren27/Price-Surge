@@ -142,3 +142,22 @@ def fetch_live_pricing(url, restaurant_name, category):
 
         browser.close()
 
+    # Deduplicate by name, keep last (full menu overwrites filtered section)
+    seen_names = {}
+    for r in raw_items:
+        seen_names[r["item_name"]] = r
+
+    scraped_at = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    for item in seen_names.values():
+        results.append({
+            "restaurant":  restaurant_name,
+            "category":    category,
+            "item_name":   item["item_name"],
+            "price":       item["price"],
+            "scraped_at":  scraped_at,
+        })
+
+    return results
+
+# ─────────────────────────────────────────────
