@@ -54,6 +54,33 @@ def check_cookies_valid(page):
     except Exception:
         return False
 
+# ─────────────────────────────────────────────
+# RECURSIVE ITEM EXTRACTOR
+
+def extract_items_recursive(data, depth=0):
+    items = []
+    if depth > 15:
+        return items
+    if isinstance(data, dict):
+        name_val = price_val = None
+        for k, v in data.items():
+            kl = k.lower()
+            if kl in ("name", "item_name", "dish_name", "title") and isinstance(v, str) and v:
+                name_val = v
+            if kl in ("price", "cost", "item_price", "display_price") and isinstance(v, (int, float)) and v > 0:
+                price_val = str(int(v))
+        if name_val and price_val:
+            items.append({"item_name": name_val, "price": f"₹{price_val}"})
+        for v in data.values():
+            items.extend(extract_items_recursive(v, depth + 1))
+    elif isinstance(data, list):
+        for item in data:
+            items.extend(extract_items_recursive(item, depth + 1))
+    return items
+
+# ─────────────────────────────────────────────
+# MAIN SCRAPER
+# ─────────────────────────────────────────────
 def fetch_live_pricing(url, restaurant_name, category):
     results = []
 
