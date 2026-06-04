@@ -40,6 +40,7 @@ def create_tables():
             item_name         TEXT NOT NULL,
             price             INTEGER NOT NULL,
             scraped_at        TIMESTAMP NOT NULL,
+            scrape_session_id TEXT
         );
     """)
 
@@ -54,7 +55,32 @@ def create_tables():
             wind_speed        REAL,
             is_rainy          BOOLEAN,
             recorded_at       TIMESTAMP NOT NULL,
+            scrape_session_id TEXT
         );
+    """)
+
+    cur.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name='prices' AND column_name='scrape_session_id'
+            ) THEN
+                ALTER TABLE prices ADD COLUMN scrape_session_id TEXT;
+            END IF;
+        END $$;
+    """)
+
+    cur.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name='weather' AND column_name='scrape_session_id'
+            ) THEN
+                ALTER TABLE weather ADD COLUMN scrape_session_id TEXT;
+            END IF;
+        END $$;
     """)
 
     cur.execute("""
