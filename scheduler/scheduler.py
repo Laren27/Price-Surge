@@ -104,6 +104,9 @@ def scrape_job():
     log("=" * 50)
     log("Starting scheduled scrape run...")
 
+    # ✅ Generate session ID once — shared by weather and all restaurants
+    scrape_session_id = datetime.now().strftime("%Y%m%d_%H%M")
+    log(f"Session ID: {scrape_session_id}")
 
     # Step 1: Check cookies file exists
     if not COOKIES_FILE.exists():
@@ -126,6 +129,7 @@ def scrape_job():
     # Step 3: Fetch and save weather with session ID
     weather = fetch_weather()
     if weather:
+        weather["scrape_session_id"] = scrape_session_id  # ✅ attach before saving
         save_weather(weather)                              # CSV
         save_weather_db(weather)                           # database
         log(f"[OK] Weather: {weather['condition']} {weather['temperature']}C  Rainy: {weather['is_rainy']}")
@@ -147,6 +151,7 @@ def scrape_job():
             env={
                 **os.environ,
                 "PYTHONIOENCODING":  "utf-8",
+                "SCRAPE_SESSION_ID": scrape_session_id  # ✅ pass to scraper
             }
         )
 
