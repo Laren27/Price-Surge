@@ -1,12 +1,12 @@
 # scheduler.py
-
+import urllib.request
 import schedule
 import time
 import subprocess
 import json
 import os
 import importlib.util
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # ─────────────────────────────────────────────
@@ -16,6 +16,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SCRAPER      = PROJECT_ROOT / "src" / "scraping" / "zomato_scraper.py"
 COOKIES_FILE = PROJECT_ROOT / "zomato_cookies.json"
 LOG_FILE     = PROJECT_ROOT / "logs" / "scheduler.log"
+
+# ─────────────────────────────────────────────
+# CONFIG
+# ─────────────────────────────────────────────
+SCRAPE_INTERVAL_HOURS = 2
+START_HOUR            = 10   # 10:00 AM
+END_HOUR              = 23   # exit after 23:00
+END_MINUTE            = 0
 
 # ─────────────────────────────────────────────
 # LOAD WEATHER MODULE
@@ -49,11 +57,6 @@ _db             = load_db_module()
 save_weather_db = _db.save_weather_db
 
 # ─────────────────────────────────────────────
-# CONFIG
-# ─────────────────────────────────────────────
-SCRAPE_INTERVAL_HOURS = 2
-
-# ─────────────────────────────────────────────
 # LOGGER
 # ─────────────────────────────────────────────
 def log(message):
@@ -63,6 +66,38 @@ def log(message):
     print(full_message)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(full_message + "\n")
+
+def check_internet(retries=10, wait_seconds=60):
+    """
+    Checks internet every 60 seconds for up to 10 minutes.
+    If connection restored within that window, proceeds normally.
+    If still down after 10 minutes, skips the run.
+    """
+    for attempt in range(1, retries + 1):
+        try:
+            urllib.request.urlopen('https://www.google.com', timeout=5)
+            if attempt > 1:
+                log(f"[OK] Internet restored on attempt {attempt} — proceeding")
+            return True
+        except Exception:
+            log(f"[WARN] No internet — attempt {attempt}/{retries}, retrying in {wait_seconds}s")
+            time.sleep(wait_seconds)
+
+    log("[FAIL] Internet still down after 10 minutes — skipping this run")
+    return False
+
+# ─────────────────────────────────────────────
+# TIME WINDOW HELPERS
+# ─────────────────────────────────────────────
+def is_within_allowed_hours():
+    """Returns True if current time is between 10am and 10pm."""
+    now = datetime.now()
+    return START_HOUR <= now.hour < (END_HOUR - 1)
+
+def should_exit():
+    """Returns True if past 23:00 — time to shut down."""
+    now = datetime.now()
+    return now.hour > END_HOUR or (now.hour == END_HOUR and now.minute >= END_MINUTE)
 
 # ─────────────────────────────────────────────
 # COOKIE VALIDATOR
