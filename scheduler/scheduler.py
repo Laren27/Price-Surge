@@ -133,15 +133,22 @@ def check_cookies_valid():
     return True
 
 # ─────────────────────────────────────────────
-# SCRAPE JOB
+# CORE SCRAPE JOB
 # ─────────────────────────────────────────────
 def scrape_job():
     log("=" * 50)
     log("Starting scheduled scrape run...")
 
-    # ✅ Generate session ID once — shared by weather and all restaurants
+    # Generate session ID once — shared by weather and all restaurants
     scrape_session_id = datetime.now().strftime("%Y%m%d_%H%M")
     log(f"Session ID: {scrape_session_id}")
+
+    # Step 0: Check internet connectivity
+    if not check_internet():
+        log("[WARN] No internet connection — skipping this run to avoid partial scrape")
+        log("Will try again in 2 hours.")
+        log("=" * 50)
+        return
 
     # Step 1: Check cookies file exists
     if not COOKIES_FILE.exists():
@@ -161,18 +168,17 @@ def scrape_job():
 
     log("[OK] Cookies valid — fetching weather...")
 
-    # Step 3: Fetch and save weather with session ID
+    # Step 3: Fetch and save weather
     weather = fetch_weather()
     if weather:
-        weather["scrape_session_id"] = scrape_session_id  # ✅ attach before saving
-        save_weather(weather)                              # CSV
-        save_weather_db(weather)                           # database
+        weather["scrape_session_id"] = scrape_session_id
+        save_weather(weather)       # CSV
+        save_weather_db(weather)    # database
         log(f"[OK] Weather: {weather['condition']} {weather['temperature']}C  Rainy: {weather['is_rainy']}")
     else:
         log("[WARN] Weather fetch failed — skipping weather for this run")
 
-    # Step 4: Run the scraper passing session ID as environment variable
-    # The scraper reads this from env so it uses the same session ID
+    # Step 4: Run the scraper
     log("Starting scraper...")
     try:
         start_time = datetime.now()
@@ -186,7 +192,7 @@ def scrape_job():
             env={
                 **os.environ,
                 "PYTHONIOENCODING":  "utf-8",
-                "SCRAPE_SESSION_ID": scrape_session_id  # ✅ pass to scraper
+                "SCRAPE_SESSION_ID": scrape_session_id
             }
         )
 
