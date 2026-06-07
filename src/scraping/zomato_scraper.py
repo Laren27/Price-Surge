@@ -144,7 +144,18 @@ def fetch_live_pricing(url, restaurant_name, category, scrape_session_id):
         page.set_viewport_size({"width": 390, "height": 844})
 
         print("Checking session...")
-        page.goto("https://www.zomato.com", wait_until="domcontentloaded", timeout=30000)
+        MAX_RETRIES = 3
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                page.goto("https://www.zomato.com", wait_until="domcontentloaded", timeout=30000)
+                break
+            except Exception as e:
+                if "ERR_NETWORK_CHANGED" in str(e) and attempt < MAX_RETRIES:
+                    print(f"[WARN] Network blip on attempt {attempt}, retrying in 60s...")
+                    time.sleep(60)
+                else:
+                    browser.close()
+                    raise
         time.sleep(2)
 
         if not check_cookies_valid(page):
