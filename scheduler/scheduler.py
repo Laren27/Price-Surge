@@ -213,6 +213,27 @@ def scrape_job():
     log("=" * 50)
 
 # ─────────────────────────────────────────────
+# GUARDED SCRAPE JOB
+# Wraps scrape_job() with time window check
+# This is what schedule calls every 2 hours
+# ─────────────────────────────────────────────
+def scrape_job_guarded():
+    if should_exit():
+        log("Past 23:00 — no more scrapes today.")
+        return
+    if not is_within_allowed_hours():
+        log(f"Skipping — outside window ({START_HOUR}:00 AM to {END_HOUR - 1}:00 PM)")
+        return
+    scrape_job()
+
+# ─────────────────────────────────────────────
+# ONE-SHOT JOB FOR 10AM WHEN STARTED EARLY
+# ─────────────────────────────────────────────
+def scrape_job_once_at_ten():
+    scrape_job()
+    return schedule.CancelJob  # fires once then removes itself
+
+# ─────────────────────────────────────────────
 # ENTRY POINT
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
@@ -220,32 +241,61 @@ if __name__ == "__main__":
     log(f"   Scraper  : {SCRAPER}")
     log(f"   Cookies  : {COOKIES_FILE}")
     log(f"   Log      : {LOG_FILE}")
+    log(f"   Window   : {START_HOUR}:00 AM to {END_HOUR - 1}:00 PM")
     log(f"   Interval : every {SCRAPE_INTERVAL_HOURS} hours")
 
-    log("Running initial scrape on startup...")
-    scrape_job()
+    now = datetime.now()
 
-    schedule.every(SCRAPE_INTERVAL_HOURS).hours.do(scrape_job)
+    if should_exit():
+        # Started after 11pm — nothing to do today
+        log("Started after 23:00 — nothing to do today. Exiting.")
+        exit(0)
 
-    log(f"Next run scheduled in {SCRAPE_INTERVAL_HOURS} hours")
-    log("Scheduler is running. Keep this terminal open.")
-    log("Press Ctrl+C to stop.")
+    elif not is_within_allowed_hours():
+        # Started before 10am — wait and pin first scrape at exactly 10:00
+        log(f"Started before {START_HOUR}:00 AM — first scrape pinned at 10:00 AM.")
+        schedule.every().day.at("10:00").do(scrape_job_once_at_ten)
+        schedule.every(SCRAPE_INTERVAL_HOURS).hours.do(scrape_job_guarded)
+        log(f"Rhythm: 10:00 AM, 12:00 PM, 2:00 PM, 4:00 PM ... until {END_HOUR - 1}:00 PM")
+
+    else:
+        # Started inside window — scrape immediately then every 2 hours
+        log("Started inside window — running initial scrape now.")
+        scrape_job()
+        schedule.every(SCRAPE_INTERVAL_HOURS).hours.do(scrape_job_guarded)
+        next_scrape = now + timedelta(hours=SCRAPE_INTERVAL_HOURS)
+        log(f"Next scrape at approximately {next_scrape.strftime('%I:%M %p')}")
+
+    log("Scheduler is running. Press Ctrl+C to stop.")
 
     last_reminder = datetime.now()
 
     while True:
         schedule.run_pending()
 
-        now      = datetime.now()
-        next_run = schedule.next_run()
+        now = datetime.now()
 
+        # Auto exit after 23:00
+        if should_exit():
+            log("23:00 reached — scraping window closed. Exiting.")
+            break
+
+        # Countdown reminder every 20 minutes
+        next_run = schedule.next_run()
         minutes_since_reminder = (now - last_reminder).seconds // 60
+
         if minutes_since_reminder >= 20:
-            remaining    = next_run - now
-            total_secs   = int(remaining.total_seconds())
-            hours_left   = total_secs // 3600
-            minutes_left = (total_secs % 3600) // 60
-            log(f"Next scrape in {hours_left}h {minutes_left}m")
+            if next_run:
+                remaining    = next_run - now
+                total_secs   = int(remaining.total_seconds())
+                hours_left   = total_secs // 3600
+                minutes_left = (total_secs % 3600) // 60
+                if is_within_allowed_hours():
+                    log(f"Next scrape in {hours_left}h {minutes_left}m")
+                else:
+                    log(f"Waiting for 10:00 AM — starts in {hours_left}h {minutes_left}m")
             last_reminder = now
 
         time.sleep(60)
+
+    log("Scheduler exited cleanly.")
