@@ -20,10 +20,11 @@ LOG_FILE     = PROJECT_ROOT / "logs" / "scheduler.log"
 # ─────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────
-SCRAPE_INTERVAL_HOURS = 2
-START_HOUR            = 10   # 10:00 AM
-END_HOUR              = 23   # exit after 23:00
-END_MINUTE            = 0
+SCRAPE_TIMES    = ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
+MIN_GAP_MINUTES = 60    # minimum minutes between end of last scrape and next slot
+START_HOUR      = 10    # scraping window opens
+END_HOUR        = 23    # exit after 23:00
+END_MINUTE      = 0
 
 # ─────────────────────────────────────────────
 # LOAD WEATHER MODULE
@@ -67,6 +68,9 @@ def log(message):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(full_message + "\n")
 
+# ─────────────────────────────────────────────
+# INTERNET CHECK
+# ─────────────────────────────────────────────
 def check_internet(retries=10, wait_seconds=60):
     """
     Checks internet every 60 seconds for up to 10 minutes.
@@ -90,9 +94,9 @@ def check_internet(retries=10, wait_seconds=60):
 # TIME WINDOW HELPERS
 # ─────────────────────────────────────────────
 def is_within_allowed_hours():
-    """Returns True if current time is between 10am and 10pm."""
+    """Returns True if current time is between 10 AM and 10 PM (inclusive)."""
     now = datetime.now()
-    return START_HOUR <= now.hour < (END_HOUR - 1)
+    return START_HOUR <= now.hour <= (END_HOUR - 1)
 
 def should_exit():
     """Returns True if past 23:00 — time to shut down."""
@@ -146,14 +150,14 @@ def scrape_job():
     # Step 0: Check internet connectivity
     if not check_internet():
         log("[WARN] No internet connection — skipping this run to avoid partial scrape")
-        log("Will try again in 2 hours.")
+        log("Will try again at the next scheduled slot.")
         log("=" * 50)
         return
 
     # Step 1: Check cookies file exists
     if not COOKIES_FILE.exists():
         log("[WARN] COOKIES MISSING — run src/scraping/save_cookies.py to fix")
-        log("Skipping this run. Will try again in 2 hours.")
+        log("Skipping this run. Will try again at the next scheduled slot.")
         log("=" * 50)
         return
 
@@ -162,7 +166,7 @@ def scrape_job():
     if not check_cookies_valid():
         log("[WARN] COOKIES EXPIRED — Zomato session ended")
         log("ACTION NEEDED: Open a new terminal and run: python src/scraping/save_cookies.py")
-        log("Skipping this run. Will try again in 2 hours.")
+        log("Skipping this run. Will try again at the next scheduled slot.")
         log("=" * 50)
         return
 
@@ -220,24 +224,27 @@ def scrape_job():
 
 # ─────────────────────────────────────────────
 # GUARDED SCRAPE JOB
-# Wraps scrape_job() with time window check
-# This is what schedule calls every 2 hours
+# Checks min gap before running — prevents a
+# slow scrape from overlapping the next slot
 # ─────────────────────────────────────────────
+last_scrape_end = None
+
 def scrape_job_guarded():
+    global last_scrape_end
+    now = datetime.now()
+
     if should_exit():
         log("Past 23:00 — no more scrapes today.")
         return
-    if not is_within_allowed_hours():
-        log(f"Skipping — outside window ({START_HOUR}:00 AM to {END_HOUR - 1}:00 PM)")
-        return
-    scrape_job()
 
-# ─────────────────────────────────────────────
-# ONE-SHOT JOB FOR 10AM WHEN STARTED EARLY
-# ─────────────────────────────────────────────
-def scrape_job_once_at_ten():
+    if last_scrape_end is not None:
+        minutes_since_last = (now - last_scrape_end).seconds // 60
+        if minutes_since_last < MIN_GAP_MINUTES:
+            log(f"Skipping slot — last scrape ended only {minutes_since_last}m ago (min gap: {MIN_GAP_MINUTES}m)")
+            return
+
     scrape_job()
-    return schedule.CancelJob  # fires once then removes itself
+    last_scrape_end = datetime.now()
 
 # ─────────────────────────────────────────────
 # ENTRY POINT
@@ -247,30 +254,46 @@ if __name__ == "__main__":
     log(f"   Scraper  : {SCRAPER}")
     log(f"   Cookies  : {COOKIES_FILE}")
     log(f"   Log      : {LOG_FILE}")
-    log(f"   Window   : {START_HOUR}:00 AM to {END_HOUR - 1}:00 PM")
-    log(f"   Interval : every {SCRAPE_INTERVAL_HOURS} hours")
+    log(f"   Slots    : {', '.join(SCRAPE_TIMES)}")
+    log(f"   Min gap  : {MIN_GAP_MINUTES} minutes between scrapes")
 
     now = datetime.now()
 
     if should_exit():
-        # Started after 11pm — nothing to do today
         log("Started after 23:00 — nothing to do today. Exiting.")
         exit(0)
 
-    elif not is_within_allowed_hours():
-        # Started before 10am — wait and pin first scrape at exactly 10:00
-        log(f"Started before {START_HOUR}:00 AM — first scrape pinned at 10:00 AM.")
-        schedule.every().day.at("10:00").do(scrape_job_once_at_ten)
-        schedule.every(SCRAPE_INTERVAL_HOURS).hours.do(scrape_job_guarded)
-        log(f"Rhythm: 10:00 AM, 12:00 PM, 2:00 PM, 4:00 PM ... until {END_HOUR - 1}:00 PM")
+    # Register all fixed time slots
+    for t in SCRAPE_TIMES:
+        schedule.every().day.at(t).do(scrape_job_guarded)
+
+    if not is_within_allowed_hours():
+        # Started before 10 AM — all slots registered, just wait
+        log("Started before 10:00 AM — first scrape at 10:00 AM.")
+        log(f"Slots: {', '.join(SCRAPE_TIMES)}")
 
     else:
-        # Started inside window — scrape immediately then every 2 hours
-        log("Started inside window — running initial scrape now.")
-        scrape_job()
-        schedule.every(SCRAPE_INTERVAL_HOURS).hours.do(scrape_job_guarded)
-        next_scrape = now + timedelta(hours=SCRAPE_INTERVAL_HOURS)
-        log(f"Next scrape at approximately {next_scrape.strftime('%I:%M %p')}")
+        # Started inside window — decide whether to scrape immediately
+        current_hour = now.hour
+        next_slot_str = next((t for t in SCRAPE_TIMES if int(t.split(":")[0]) > current_hour), None)
+
+        if next_slot_str:
+            next_slot_dt = datetime.strptime(next_slot_str, "%H:%M").replace(
+                year=now.year, month=now.month, day=now.day
+            )
+            mins_to_next = int((next_slot_dt - now).total_seconds() // 60)
+
+            if mins_to_next >= MIN_GAP_MINUTES:
+                # Enough time before next slot — scrape now
+                log("Started inside window — running initial scrape now.")
+                scrape_job()
+                last_scrape_end = datetime.now()
+                log(f"Next slot: {next_slot_str}")
+            else:
+                # Too close to next slot — just wait for it
+                log(f"Started {mins_to_next}m before next slot ({next_slot_str}) — waiting for slot.")
+        else:
+            log("No upcoming slots today — waiting for exit.")
 
     log("Scheduler is running. Press Ctrl+C to stop.")
 
@@ -296,10 +319,7 @@ if __name__ == "__main__":
                 total_secs   = int(remaining.total_seconds())
                 hours_left   = total_secs // 3600
                 minutes_left = (total_secs % 3600) // 60
-                if is_within_allowed_hours():
-                    log(f"Next scrape in {hours_left}h {minutes_left}m")
-                else:
-                    log(f"Waiting for 10:00 AM — starts in {hours_left}h {minutes_left}m")
+                log(f"Next slot in {hours_left}h {minutes_left}m")
             last_reminder = now
 
         time.sleep(60)
