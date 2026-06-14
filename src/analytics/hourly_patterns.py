@@ -1,169 +1,141 @@
 # src/analytics/hourly_patterns.py
-#
-# Q3 — Hourly Pricing Analysis
-# Question : What time of day consistently produces the highest menu prices?
-# Output   : Average price per hour across all restaurants and per restaurant
-# Method   : GROUP BY hour_of_day, compute avg price, rank windows
-#
-# Run from anywhere:
-#   python src/analytics/hourly_patterns.py
-
 import pandas as pd
 from pathlib import Path
 import psycopg2
 import sys
+
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(ROOT_DIR))
 
 from src.scraping.database import DB_CONFIG
-from src.utils.db_writer import get_engine, save_df_to_db
-# ─────────────────────────────────────────────
-# QUERIES
-# ─────────────────────────────────────────────
+from src.utils.db_writer import get_engine
 
-# Overall hourly pattern across all restaurants
+OUT_DIR = ROOT_DIR / 'data' / 'processed' / 'hourly_patterns'
+
 HOURLY_OVERALL_QUERY = """
     SELECT
-        hour_of_day,
-        COUNT(*)                                        AS total_records,
-        ROUND(AVG(price)::NUMERIC, 2)                   AS avg_price,
-        ROUND(MIN(price)::NUMERIC, 2)                   AS min_price,
-        ROUND(MAX(price)::NUMERIC, 2)                   AS max_price,
-        ROUND(STDDEV(price)::NUMERIC, 2)                AS price_stddev
-    FROM v_analysis_base
-    WHERE price IS NOT NULL
-    GROUP BY hour_of_day
-    ORDER BY hour_of_day;
+        hours.hour_of_day,
+        COUNT(chg.item_name)::INT AS total_change_events,
+        COALESCE(ROUND(AVG(chg.pct_change)::NUMERIC, 2), 0.0) AS avg_price_change_pct
+    FROM (SELECT DISTINCT hour_of_day FROM v_analysis_base) hours
+    LEFT JOIN v_price_changes chg ON hours.hour_of_day = chg.hour_of_day
+    GROUP BY hours.hour_of_day
+    ORDER BY hours.hour_of_day;
 """
 
-# Hourly pattern per restaurant per category
 HOURLY_PER_RESTAURANT_QUERY = """
     SELECT
-        restaurant,
-        restaurant_category,
-        hour_of_day,
-        COUNT(*)                                        AS total_records,
-        ROUND(AVG(price)::NUMERIC, 2)                   AS avg_price
-    FROM v_analysis_base
-    WHERE price IS NOT NULL
-    GROUP BY restaurant, restaurant_category, hour_of_day
-    ORDER BY restaurant, hour_of_day;
+        base.restaurant,
+        base.restaurant_category,
+        hours.hour_of_day,
+        COUNT(chg.item_name)::INT AS total_change_events,
+        COALESCE(ROUND(AVG(chg.pct_change)::NUMERIC, 2), 0.0) AS avg_price_change_pct
+    FROM (SELECT DISTINCT restaurant, restaurant_category FROM v_analysis_base) base
+    CROSS JOIN (SELECT DISTINCT hour_of_day FROM v_analysis_base) hours
+    LEFT JOIN v_price_changes chg
+        ON base.restaurant = chg.restaurant
+       AND base.restaurant_category = chg.restaurant_category
+       AND hours.hour_of_day = chg.hour_of_day
+    GROUP BY base.restaurant, base.restaurant_category, hours.hour_of_day
+    ORDER BY base.restaurant, hours.hour_of_day;
 """
 
-# Peak vs off-peak comparison
-# Peak   : 1200–1400 (lunch), 1900–2100 (dinner)
-# Off-peak: 1000–1200, 1400–1800, 2100–2200
+HOURLY_PEAK_PER_RESTAURANT_QUERY = """
+    WITH ranked AS (
+        SELECT
+            restaurant,
+            restaurant_category,
+            hour_of_day,
+            avg_price_change_pct,
+            ROW_NUMBER() OVER (
+                PARTITION BY restaurant, restaurant_category
+                ORDER BY avg_price_change_pct DESC
+            ) AS rn
+        FROM (
+            SELECT
+                base.restaurant,
+                base.restaurant_category,
+                hours.hour_of_day,
+                COALESCE(ROUND(AVG(chg.pct_change)::NUMERIC, 2), 0.0) AS avg_price_change_pct
+            FROM (SELECT DISTINCT restaurant, restaurant_category FROM v_analysis_base) base
+            CROSS JOIN (SELECT DISTINCT hour_of_day FROM v_analysis_base) hours
+            LEFT JOIN v_price_changes chg
+                ON base.restaurant = chg.restaurant
+               AND base.restaurant_category = chg.restaurant_category
+               AND hours.hour_of_day = chg.hour_of_day
+            GROUP BY base.restaurant, base.restaurant_category, hours.hour_of_day
+        ) sub
+    )
+    SELECT restaurant, restaurant_category,
+           hour_of_day AS peak_hour,
+           avg_price_change_pct AS peak_change_pct
+    FROM ranked WHERE rn = 1
+    ORDER BY peak_change_pct DESC;
+"""
+
 PEAK_OFFPEAK_QUERY = """
     SELECT
-        restaurant,
-        restaurant_category,
+        base.restaurant,
+        base.restaurant_category,
         CASE
-            WHEN hour_of_day IN (12, 13)        THEN 'Lunch Peak'
-            WHEN hour_of_day IN (19, 20)        THEN 'Dinner Peak'
-            WHEN hour_of_day IN (10, 11)        THEN 'Morning Off-Peak'
-            WHEN hour_of_day IN (14, 15, 16, 17, 18) THEN 'Afternoon Off-Peak'
-            WHEN hour_of_day IN (21, 22)        THEN 'Late Night Off-Peak'
+            WHEN hours.hour_of_day IN (12, 13) THEN 'Lunch Peak'
+            WHEN hours.hour_of_day IN (19, 20) THEN 'Dinner Peak'
+            WHEN hours.hour_of_day IN (10, 11) THEN 'Morning Off-Peak'
+            WHEN hours.hour_of_day IN (14, 15, 16, 17, 18) THEN 'Afternoon Off-Peak'
+            WHEN hours.hour_of_day IN (21, 22) THEN 'Late Night Off-Peak'
             ELSE 'Other'
-        END                                             AS time_window,
-        COUNT(*)                                        AS total_records,
-        ROUND(AVG(price)::NUMERIC, 2)                   AS avg_price
-    FROM v_analysis_base
-    WHERE price IS NOT NULL
-    GROUP BY restaurant, restaurant_category, time_window
-    ORDER BY restaurant, avg_price DESC;
+        END AS time_window,
+        COUNT(chg.item_name)::INT AS total_change_events,
+        COALESCE(ROUND(AVG(chg.pct_change)::NUMERIC, 2), 0.0) AS avg_price_change_pct
+    FROM (SELECT DISTINCT restaurant, restaurant_category FROM v_analysis_base) base
+    CROSS JOIN (SELECT DISTINCT hour_of_day FROM v_analysis_base) hours
+    LEFT JOIN v_price_changes chg
+        ON base.restaurant = chg.restaurant
+       AND base.restaurant_category = chg.restaurant_category
+       AND hours.hour_of_day = chg.hour_of_day
+    GROUP BY base.restaurant, base.restaurant_category, time_window
+    ORDER BY base.restaurant, avg_price_change_pct DESC;
 """
 
-# ─────────────────────────────────────────────
-# DB CONNECTION
-# ─────────────────────────────────────────────
-def get_connection():
-    return psycopg2.connect(**DB_CONFIG)
-
 def fetch(query):
-    conn = get_connection()
+    conn = psycopg2.connect(**DB_CONFIG)
     df   = pd.read_sql(query, conn)
     conn.close()
     return df
 
-# ─────────────────────────────────────────────
-# CORE ANALYSIS
-# ─────────────────────────────────────────────
-def analyze_hourly(df_overall, df_per_restaurant):
-
-    # ── Overall cheapest and most expensive windows ──
-    cheapest_hour    = df_overall.loc[df_overall['avg_price'].idxmin()]
-    most_expensive_hour = df_overall.loc[df_overall['avg_price'].idxmax()]
-
-    print("\n── Overall Hourly Summary ──")
-    print(df_overall.to_string(index=False))
-
-    print(f"\n🟢 Cheapest window    : {int(cheapest_hour['hour_of_day']):02d}:00"
-          f"  →  avg ₹{cheapest_hour['avg_price']}")
-    print(f"🔴 Most expensive window : {int(most_expensive_hour['hour_of_day']):02d}:00"
-          f"  →  avg ₹{most_expensive_hour['avg_price']}")
-
-    # ── Per restaurant: which hour is their peak price hour ──
-    print("\n── Peak Price Hour Per Restaurant ──")
-    peak_per_restaurant = (
-        df_per_restaurant
-        .sort_values('avg_price', ascending=False)
-        .groupby(['restaurant', 'restaurant_category'])
-        .first()
-        .reset_index()
-        [['restaurant', 'restaurant_category', 'hour_of_day', 'avg_price']]
-        .rename(columns={'hour_of_day': 'peak_hour', 'avg_price': 'peak_avg_price'})
-        .sort_values('peak_avg_price', ascending=False)
-    )
-    print(peak_per_restaurant.to_string(index=False))
-
-    return peak_per_restaurant
-
-# ─────────────────────────────────────────────
-# SAVE OUTPUT
-# ─────────────────────────────────────────────
-def save_results(df_overall, df_per_restaurant, df_peak_offpeak, df_peak_per_restaurant):
-    out = ROOT_DIR / 'data' / 'processed' / 'hourly_patterns'
-    out.mkdir(parents=True, exist_ok=True)
-
-    df_overall.to_csv(out / 'hourly_overall.csv', index=False)
-    df_per_restaurant.to_csv(out / 'hourly_per_restaurant.csv', index=False)
-    df_peak_offpeak.to_csv(out / 'peak_offpeak.csv', index=False)
-    df_peak_per_restaurant.to_csv(out / 'hourly_peak_per_restaurant.csv', index=False)
-
-    print(f"\n✅ Results saved to {out}")
-
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
 if __name__ == "__main__":
     print("=" * 60)
-    print("Q3 — Hourly Pricing Analysis")
+    print("Q7 — Clean Hourly Pattern Analysis")
     print("=" * 60)
 
-    print("\n[1] Fetching data...")
-    df_overall          = fetch(HOURLY_OVERALL_QUERY)
-    df_per_restaurant   = fetch(HOURLY_PER_RESTAURANT_QUERY)
-    df_peak_offpeak     = fetch(PEAK_OFFPEAK_QUERY)
+    print("\n[1] Fetching hourly overall market metrics...")
+    hourly_overall = fetch(HOURLY_OVERALL_QUERY)
 
-    if df_overall.empty:
-        print("⚠️  No data found. Check v_analysis_base.")
-        sys.exit()
+    print("[2] Fetching hourly per-restaurant metrics...")
+    hourly_per_restaurant = fetch(HOURLY_PER_RESTAURANT_QUERY)
 
-    print(f"    Hours covered   : {sorted(df_overall['hour_of_day'].tolist())}")
-    print(f"    Restaurants     : {df_per_restaurant['restaurant'].nunique()}")
+    print("[3] Fetching peak hour per restaurant...")
+    hourly_peak = fetch(HOURLY_PEAK_PER_RESTAURANT_QUERY)
 
-    print("\n[2] Running Analysis...")
-    df_peak_per_restaurant = analyze_hourly(df_overall, df_per_restaurant)
+    print("[4] Fetching peak vs off-peak window metrics...")
+    peak_offpeak = fetch(PEAK_OFFPEAK_QUERY)
 
-    print("\n[3] Peak vs Off-Peak Summary:")
-    print(df_peak_offpeak.to_string(index=False))
+    print("\n── Hourly Overall (Market) ──")
+    print(hourly_overall.to_string(index=False))
 
-    save_results(df_overall, df_per_restaurant, df_peak_offpeak, df_peak_per_restaurant)
-    # ── Save to DB ──
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    hourly_overall.to_csv(OUT_DIR / 'hourly_overall.csv', index=False)
+    hourly_per_restaurant.to_csv(OUT_DIR / 'hourly_per_restaurant.csv', index=False)
+    hourly_peak.to_csv(OUT_DIR / 'hourly_peak_per_restaurant.csv', index=False)
+    peak_offpeak.to_csv(OUT_DIR / 'peak_offpeak.csv', index=False)
+
+    print("\n[5] Syncing all hourly tables to database...")
     engine = get_engine()
-    save_df_to_db(df_overall,             'analytics_hourly_overall',         engine)
-    save_df_to_db(df_per_restaurant,      'analytics_hourly_per_restaurant',  engine)
-    save_df_to_db(df_peak_offpeak,        'analytics_peak_offpeak',           engine)
-    save_df_to_db(df_peak_per_restaurant, 'analytics_hourly_peak_restaurant', engine)
 
-    print("\n" + "=" * 60)
+    hourly_overall.to_sql('analytics_hourly_overall', con=engine, if_exists='replace', index=False)
+    hourly_per_restaurant.to_sql('analytics_hourly_per_restaurant', con=engine, if_exists='replace', index=False)
+    hourly_peak.to_sql('analytics_hourly_peak_restaurant', con=engine, if_exists='replace', index=False)
+    peak_offpeak.to_sql('analytics_peak_offpeak', con=engine, if_exists='replace', index=False)
+
+    print("✅ Successfully updated all hourly analytics tables.")
+    print("=" * 60)

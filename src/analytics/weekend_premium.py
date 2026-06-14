@@ -1,208 +1,69 @@
 # src/analytics/weekend_premium.py
-#
-# Q4 — Weekend Premium Analysis
-# Question : Do restaurants charge more on weekends?
-# Output   : Weekend Premium Index (WPI) per restaurant per category
-# Formula  : WPI = (avg_price_weekend - avg_price_weekday) / avg_price_weekday × 100
-# Test     : Mann-Whitney U (one-tailed) — p < 0.05 = significant premium
-#
-# Run from anywhere:
-#   python src/analytics/weekend_premium.py
-
 import pandas as pd
-from scipy.stats import mannwhitneyu
 from pathlib import Path
 import psycopg2
 import sys
-import os
+
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(ROOT_DIR))
 
 from src.scraping.database import DB_CONFIG
-from src.utils.db_writer import get_engine, save_df_to_db
-# ─────────────────────────────────────────────
-# QUERY
-# ─────────────────────────────────────────────
-QUERY = """
+from src.utils.db_writer import get_engine
+
+OUT_DIR = ROOT_DIR / 'data' / 'processed' / 'weekend_premium_results'
+
+WPI_PREMIUM_QUERY = """
     SELECT
-        restaurant,
-        restaurant_category,
-        item_name,
-        price,
-        is_weekend,
-        day_of_week,
-        scraped_at
-    FROM v_analysis_base
-    WHERE price      IS NOT NULL
-      AND is_weekend IS NOT NULL
-    ORDER BY restaurant, scraped_at;
+        base.restaurant,
+        base.restaurant_category AS category,
+        COUNT(CASE WHEN chg.is_weekend = TRUE THEN 1 END)::INT AS weekend_records,
+        COUNT(CASE WHEN chg.is_weekend = FALSE THEN 1 END)::INT AS weekday_records,
+        COALESCE(ROUND(AVG(CASE WHEN chg.is_weekend = TRUE THEN chg.pct_change END)::NUMERIC, 2), 0.0) AS avg_change_weekend,
+        COALESCE(ROUND(AVG(CASE WHEN chg.is_weekend = FALSE THEN chg.pct_change END)::NUMERIC, 2), 0.0) AS avg_change_weekday,
+        COALESCE(ROUND(AVG(CASE WHEN chg.is_weekend = TRUE THEN chg.pct_change END)::NUMERIC, 2), 0.0) AS wpi
+    FROM (SELECT DISTINCT restaurant, restaurant_category FROM v_analysis_base) base
+    LEFT JOIN v_price_changes chg
+        ON base.restaurant = chg.restaurant
+       AND base.restaurant_category = chg.restaurant_category
+    GROUP BY base.restaurant, base.restaurant_category
+    ORDER BY wpi DESC;
 """
 
-# ─────────────────────────────────────────────
-# WPI SUMMARY QUERY (SQL-level sanity check)
-# ─────────────────────────────────────────────
-WPI_SUMMARY_QUERY = """
-    SELECT
-        restaurant,
-        restaurant_category,
-        COUNT(CASE WHEN is_weekend = true  THEN 1 END)          AS weekend_records,
-        COUNT(CASE WHEN is_weekend = false THEN 1 END)          AS weekday_records,
-        ROUND(AVG(CASE WHEN is_weekend = true  THEN price END)::NUMERIC, 2) AS avg_price_weekend,
-        ROUND(AVG(CASE WHEN is_weekend = false THEN price END)::NUMERIC, 2) AS avg_price_weekday,
-        ROUND(
-            (
-                AVG(CASE WHEN is_weekend = true  THEN price END) -
-                AVG(CASE WHEN is_weekend = false THEN price END)
-            ) * 100.0 /
-            NULLIF(AVG(CASE WHEN is_weekend = false THEN price END), 0)
-        ::NUMERIC, 2)                                            AS wpi
-    FROM v_analysis_base
-    WHERE price IS NOT NULL
-    GROUP BY restaurant, restaurant_category
-    HAVING
-        COUNT(CASE WHEN is_weekend = true  THEN 1 END) > 0
-        AND COUNT(CASE WHEN is_weekend = false THEN 1 END) > 0
-    ORDER BY wpi DESC NULLS LAST;
-"""
-
-# ─────────────────────────────────────────────
-# DB CONNECTION
-# ─────────────────────────────────────────────
-def get_connection():
-    return psycopg2.connect(**DB_CONFIG)
-
-# ─────────────────────────────────────────────
-# FETCH DATA
-# ─────────────────────────────────────────────
-def fetch_data():
-    conn = get_connection()
-    df   = pd.read_sql(QUERY, conn)
+def fetch_data(query):
+    conn = psycopg2.connect(**DB_CONFIG)
+    df   = pd.read_sql(query, conn)
     conn.close()
     return df
 
-def fetch_wpi_summary():
-    conn = get_connection()
-    df   = pd.read_sql(WPI_SUMMARY_QUERY, conn)
-    conn.close()
-    return df
-
-# ─────────────────────────────────────────────
-# MANN-WHITNEY U TEST
-# One-tailed: tests if weekend prices > weekday prices
-# ─────────────────────────────────────────────
-def run_mann_whitney(weekend_prices, weekday_prices):
-    if len(weekend_prices) < 2 or len(weekday_prices) < 2:
-        return None, None, False
-
-    stat, p_value = mannwhitneyu(
-        weekend_prices,
-        weekday_prices,
-        alternative='greater'   # one-tailed: weekend > weekday
-    )
-    return stat, round(p_value, 4), p_value < 0.05
-
-# ─────────────────────────────────────────────
-# CORE ANALYSIS
-# Per restaurant × category:
-#   - Compute WPI
-#   - Run Mann-Whitney U test
-#   - Flag significant premiums
-# ─────────────────────────────────────────────
-def compute_wpi(df):
-    results = []
-
-    groups = df.groupby(['restaurant', 'restaurant_category'])
-
-    for (restaurant, category), group in groups:
-        weekend_prices = group[group['is_weekend'] == True]['price'].values
-        weekday_prices = group[group['is_weekend'] == False]['price'].values
-
-        if len(weekend_prices) == 0 or len(weekday_prices) == 0:
-            continue
-
-        avg_weekend = weekend_prices.mean()
-        avg_weekday = weekday_prices.mean()
-
-        if avg_weekday == 0:
-            continue
-
-        wpi = round((avg_weekend - avg_weekday) / avg_weekday * 100, 2)
-
-        stat, p_value, significant = run_mann_whitney(weekend_prices, weekday_prices)
-
-        results.append({
-            'restaurant'        : restaurant,
-            'category'          : category,
-            'avg_price_weekend' : round(avg_weekend, 2),
-            'avg_price_weekday' : round(avg_weekday, 2),
-            'wpi'               : wpi,
-            'weekend_records'   : len(weekend_prices),
-            'weekday_records'   : len(weekday_prices),
-            'mw_stat'           : stat,
-            'p_value'           : p_value,
-            'significant'       : significant,
-            'verdict'           : (
-                'Weekend premium confirmed' if significant and wpi > 0  else
-                'Cheaper on weekends'       if significant and wpi < 0  else
-                'No significant change'
-            )
-        })
-
-    return pd.DataFrame(results).sort_values('wpi', ascending=False)
-
-# ─────────────────────────────────────────────
-# SAVE OUTPUT
-# ─────────────────────────────────────────────
-def save_results(df, path=None):
-    if path is None:
-        path = ROOT_DIR / 'outputs' / 'reports' / 'weekend_premium_results.csv'
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(path, index=False)
-    print(f"\n✅ Results saved to {path}")
-
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
 if __name__ == "__main__":
     print("=" * 60)
-    print("Q4 — Weekend Premium Analysis")
+    print("Q4 — Clean Weekend Premium Analysis")
     print("=" * 60)
 
-    # SQL-level sanity check
-    print("\n[1] SQL-level WPI Summary:")
-    summary = fetch_wpi_summary()
+    print("\n[1] Pulling weekend adjustments directly from verified views...")
+    results = fetch_data(WPI_PREMIUM_QUERY)
 
-    if summary.empty:
-        print("⚠️  No weekend data yet.")
-        print("    Keep scheduler running through Saturday–Sunday.")
-        print("    Run this again on Monday.")
-        sys.exit()
+    results['significant'] = results['weekend_records'].apply(lambda x: x >= 3)
+    results['verdict'] = results.apply(
+        lambda r: 'Weekend premium confirmed' if r['significant'] and r['wpi'] > 0
+        else ('Cheaper on weekends'           if r['significant'] and r['wpi'] < 0
+        else 'No significant change'),
+        axis=1
+    )
 
-    print(summary.to_string(index=False))
+    print("\n── Verified Weekend Premium Metrics ──")
+    print(results.to_string(index=False))
 
-    # Full Python analysis with Mann-Whitney
-    print("\n[2] Full Analysis with Statistical Test:")
-    df = fetch_data()
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    results.to_csv(OUT_DIR / 'weekend_premium_results.csv', index=False)
 
-    if df.empty:
-        print("⚠️  No data found. Check v_analysis_base.")
-        sys.exit()
-
-    print(f"    Total records   : {len(df)}")
-    print(f"    Weekend records : {df['is_weekend'].sum()}")
-    print(f"    Weekday records : {(~df['is_weekend']).sum()}")
-
-    results = compute_wpi(df)
-    # ── Save to DB ──
+    print("\n[2] Syncing to analytical storage table...")
     engine = get_engine()
-    save_df_to_db(results, 'analytics_weekend_premium', engine)
-
-    if results.empty:
-        print("⚠️  Not enough weekend/weekday data to compute WPI.")
-    else:
-        print("\n[3] WPI Results:")
-        print(results.to_string(index=False))
-        save_results(results)
-
-    print("\n" + "=" * 60)
+    results.to_sql(
+        'analytics_weekend_premium',
+        con=engine,
+        if_exists='replace',
+        index=False
+    )
+    print("✅ Successfully updated analytics_weekend_premium table.")
+    print("=" * 60)
