@@ -151,7 +151,7 @@ def execute_pipeline():
         print(f"    -> Exported: data/processed/synchronized_pricing/sync_correlated_pairs_all.csv  ({len(sync_all_df)} pairs)")
         print(f"    -> Exported: data/processed/synchronized_pricing/sync_correlated_pairs_rain.csv ({len(sync_rain_df)} pairs)")
 
-        print("\n✅ Total Pipeline Run Successful! All 12 visualization matrices synchronized.")
+        print("\n✅ Total Pipeline Run Successful! All 15 visualization matrices synchronized.")
 
     except Exception as e:
         print(f"\n❌ Execution Exception: Pipeline processing interrupted: {e}")
