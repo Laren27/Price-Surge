@@ -372,10 +372,12 @@ BEGIN
     -- analytics_sync_pairs_all and analytics_sync_pairs_rain are managed
     -- by the Python engine in run_all.py — not swapped here.
     DROP TABLE IF EXISTS analytics_category_hour_heatmap;
-
+-- ============================================
+    -- Table 15: analytics_category_hour_heatmap
+    -- ============================================
 CREATE TABLE analytics_category_hour_heatmap AS
 SELECT 
-    category,
+    category,   
     EXTRACT(HOUR FROM scraped_at)::integer AS hour_of_day,
     ROUND(AVG(price), 0) AS avg_price,
     COUNT(*) AS observation_count
@@ -384,4 +386,40 @@ WHERE EXTRACT(HOUR FROM scraped_at) BETWEEN 10 AND 22
 GROUP BY category, EXTRACT(HOUR FROM scraped_at)
 ORDER BY category, hour_of_day;
 
+-- ============================================
+    -- Table 13: analytics_restaurant_weather_price
+    -- ============================================
+    DROP TABLE IF EXISTS analytics_restaurant_weather_price_staging;
+    
+    CREATE TABLE analytics_restaurant_weather_price_staging AS
+    SELECT 
+        p.restaurant,
+        CASE WHEN w.is_rainy THEN 'Rain' ELSE 'Dry' END AS weather_condition,
+        ROUND(AVG(p.price), 0) AS avg_price,
+        COUNT(*) AS observation_count
+    FROM prices p
+    JOIN weather w ON p.scrape_session_id = w.scrape_session_id
+    GROUP BY p.restaurant, CASE WHEN w.is_rainy THEN 'Rain' ELSE 'Dry' END;
+    
+    DROP TABLE IF EXISTS analytics_restaurant_weather_price;
+    ALTER TABLE analytics_restaurant_weather_price_staging 
+        RENAME TO analytics_restaurant_weather_price;
+
+    -- ============================================
+    -- Table 14: analytics_market_weather_price
+    -- ============================================
+    DROP TABLE IF EXISTS analytics_market_weather_price_staging;
+    
+    CREATE TABLE analytics_market_weather_price_staging AS
+    SELECT 
+        CASE WHEN w.is_rainy THEN 'Rain' ELSE 'Dry' END AS weather_condition,
+        ROUND(AVG(p.price), 0) AS avg_price,
+        COUNT(*) AS observation_count
+    FROM prices p
+    JOIN weather w ON p.scrape_session_id = w.scrape_session_id
+    GROUP BY CASE WHEN w.is_rainy THEN 'Rain' ELSE 'Dry' END;
+    
+    DROP TABLE IF EXISTS analytics_market_weather_price;
+    ALTER TABLE analytics_market_weather_price_staging 
+        RENAME TO analytics_market_weather_price;
 END $$;
