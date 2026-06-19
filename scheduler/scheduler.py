@@ -1,4 +1,13 @@
-# scheduler.py
+# scheduler/scheduler.py
+# ─────────────────────────────────────────────
+# Orchestrates scraping, weather, and alerts.
+# Runs fixed slots: 10:00 12:00 14:00 16:00 18:00 20:00 22:00
+# Exits at 23:00. Min 60-minute gap between scrapes.
+# Alerts fire automatically on success, failure, or no internet.
+# ─────────────────────────────────────────────
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import urllib.request
 import schedule
 import time
@@ -6,8 +15,16 @@ import subprocess
 import json
 import os
 import importlib.util
-from datetime import datetime, timedelta
+import traceback
+from datetime import datetime
 from pathlib import Path
+from src.alerts.telegram import (
+    alert_scrape_success,
+    alert_scrape_failure,
+    alert_no_internet,
+    alert_scrape_started,
+    alert_waiting_for_window
+)
 
 # ─────────────────────────────────────────────
 # PATHS
@@ -21,9 +38,9 @@ LOG_FILE     = PROJECT_ROOT / "logs" / "scheduler.log"
 # CONFIG
 # ─────────────────────────────────────────────
 SCRAPE_TIMES    = ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
-MIN_GAP_MINUTES = 60    # minimum minutes between end of last scrape and next slot
-START_HOUR      = 10    # scraping window opens
-END_HOUR        = 23    # exit after 23:00
+MIN_GAP_MINUTES = 60
+START_HOUR      = 10
+END_HOUR        = 23
 END_MINUTE      = 0
 
 # ─────────────────────────────────────────────
@@ -69,14 +86,12 @@ def log(message):
         f.write(full_message + "\n")
 
 # ─────────────────────────────────────────────
-# INTERNET CHECK
+# INTERNET CHECK (scheduler's own version)
+# Retries every 60s for up to 10 minutes.
+# Separate from connectivity.py which is a
+# simple single-attempt check used by alerts.
 # ─────────────────────────────────────────────
 def check_internet(retries=10, wait_seconds=60):
-    """
-    Checks internet every 60 seconds for up to 10 minutes.
-    If connection restored within that window, proceeds normally.
-    If still down after 10 minutes, skips the run.
-    """
     for attempt in range(1, retries + 1):
         try:
             urllib.request.urlopen('https://www.google.com', timeout=5)
@@ -94,12 +109,10 @@ def check_internet(retries=10, wait_seconds=60):
 # TIME WINDOW HELPERS
 # ─────────────────────────────────────────────
 def is_within_allowed_hours():
-    """Returns True if current time is between 10 AM and 10 PM (inclusive)."""
     now = datetime.now()
     return START_HOUR <= now.hour <= (END_HOUR - 1)
 
 def should_exit():
-    """Returns True if past 23:00 — time to shut down."""
     now = datetime.now()
     return now.hour > END_HOUR or (now.hour == END_HOUR and now.minute >= END_MINUTE)
 
@@ -138,20 +151,36 @@ def check_cookies_valid():
 
 # ─────────────────────────────────────────────
 # CORE SCRAPE JOB
+# This is where all real work happens.
+# Alerts fire from inside this function.
 # ─────────────────────────────────────────────
 def scrape_job():
     log("=" * 50)
     log("Starting scheduled scrape run...")
 
-    # Generate session ID once — shared by weather and all restaurants
     scrape_session_id = datetime.now().strftime("%Y%m%d_%H%M")
     log(f"Session ID: {scrape_session_id}")
 
-    # Step 0: Check internet connectivity
+    # Figure out the next scheduled slot to include in the alert
+    now = datetime.now()
+    next_slot = next(
+        (t for t in SCRAPE_TIMES if int(t.split(":")[0]) > now.hour),
+        "No more slots today"
+    )
+
+    alert_scrape_started(          # ← Alert D: cycle beginning
+        session_id=scrape_session_id,
+        next_slot=next_slot
+    )
+
+    # Step 0: Internet check
+    # Uses the scheduler's own retry-based check (10 attempts, 60s apart).
+    # If still down after 10 minutes → Alert C fires and we skip the run.
     if not check_internet():
         log("[WARN] No internet connection — skipping this run to avoid partial scrape")
         log("Will try again at the next scheduled slot.")
         log("=" * 50)
+        alert_no_internet()   # ← Alert C: network offline
         return
 
     # Step 1: Check cookies file exists
@@ -176,13 +205,16 @@ def scrape_job():
     weather = fetch_weather()
     if weather:
         weather["scrape_session_id"] = scrape_session_id
-        save_weather(weather)       # CSV
-        save_weather_db(weather)    # database
+        save_weather(weather)
+        save_weather_db(weather)
         log(f"[OK] Weather: {weather['condition']} {weather['temperature']}C  Rainy: {weather['is_rainy']}")
     else:
         log("[WARN] Weather fetch failed — skipping weather for this run")
 
-    # Step 4: Run the scraper
+    # Step 4: Run the scraper subprocess
+    # Success  → Alert A fires with duration and restaurant count
+    # Timeout  → Alert B fires with TimeoutExpired
+    # Any crash → Alert B fires with full traceback
     log("Starting scraper...")
     try:
         start_time = datetime.now()
@@ -212,20 +244,37 @@ def scrape_job():
 
         if result.returncode == 0:
             log(f"[OK] Scrape completed in {duration} minutes")
+            alert_scrape_success(          # ← Alert A: clean completion
+                duration_minutes=duration,
+                restaurants_scraped=19
+            )
         else:
             log(f"[FAIL] Scraper exited with error code {result.returncode}")
+            alert_scrape_failure(          # ← Alert B: non-zero exit code
+                error_type="SubprocessError",
+                traceback_snippet=f"Scraper exited with code {result.returncode}.\n{result.stderr[:300]}"
+            )
 
     except subprocess.TimeoutExpired:
         log("[FAIL] Scraper timed out after 1 hour — killed")
+        alert_scrape_failure(              # ← Alert B: timeout
+            error_type="TimeoutExpired",
+            traceback_snippet="Scraper subprocess timed out after 3600 seconds."
+        )
     except Exception as e:
         log(f"[FAIL] Failed to run scraper: {e}")
+        alert_scrape_failure(              # ← Alert B: unexpected crash
+            error_type=type(e).__name__,
+            traceback_snippet=traceback.format_exc()
+        )
 
     log("=" * 50)
 
 # ─────────────────────────────────────────────
 # GUARDED SCRAPE JOB
-# Checks min gap before running — prevents a
-# slow scrape from overlapping the next slot
+# Sits between the scheduler and scrape_job().
+# Enforces the 60-minute minimum gap between
+# scrapes so slow runs don't overlap next slot.
 # ─────────────────────────────────────────────
 last_scrape_end = None
 
@@ -263,17 +312,18 @@ if __name__ == "__main__":
         log("Started after 23:00 — nothing to do today. Exiting.")
         exit(0)
 
-    # Register all fixed time slots
     for t in SCRAPE_TIMES:
         schedule.every().day.at(t).do(scrape_job_guarded)
 
     if not is_within_allowed_hours():
-        # Started before 10 AM — all slots registered, just wait
+        now = datetime.now()
+        first_slot = now.replace(hour=10, minute=0, second=0, microsecond=0)
+        minutes_until = int((first_slot - now).total_seconds() // 60)
+
         log("Started before 10:00 AM — first scrape at 10:00 AM.")
         log(f"Slots: {', '.join(SCRAPE_TIMES)}")
-
+        alert_waiting_for_window(minutes_until)
     else:
-        # Started inside window — decide whether to scrape immediately
         current_hour = now.hour
         next_slot_str = next((t for t in SCRAPE_TIMES if int(t.split(":")[0]) > current_hour), None)
 
@@ -284,13 +334,11 @@ if __name__ == "__main__":
             mins_to_next = int((next_slot_dt - now).total_seconds() // 60)
 
             if mins_to_next >= MIN_GAP_MINUTES:
-                # Enough time before next slot — scrape now
                 log("Started inside window — running initial scrape now.")
                 scrape_job()
                 last_scrape_end = datetime.now()
                 log(f"Next slot: {next_slot_str}")
             else:
-                # Too close to next slot — just wait for it
                 log(f"Started {mins_to_next}m before next slot ({next_slot_str}) — waiting for slot.")
         else:
             log("No upcoming slots today — waiting for exit.")
@@ -304,12 +352,10 @@ if __name__ == "__main__":
 
         now = datetime.now()
 
-        # Auto exit after 23:00
         if should_exit():
             log("23:00 reached — scraping window closed. Exiting.")
             break
 
-        # Countdown reminder every 20 minutes
         next_run = schedule.next_run()
         minutes_since_reminder = (now - last_reminder).seconds // 60
 
