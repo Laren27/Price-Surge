@@ -150,8 +150,9 @@ def fetch_live_pricing(url, restaurant_name, category, scrape_session_id):
                 page.goto("https://www.zomato.com", wait_until="domcontentloaded", timeout=30000)
                 break
             except Exception as e:
-                if "ERR_NETWORK_CHANGED" in str(e) and attempt < MAX_RETRIES:
-                    print(f"[WARN] Network blip on attempt {attempt}, retrying in 60s...")
+                err = str(e)
+                if any(x in err for x in ["ERR_NETWORK_CHANGED", "ERR_NAME_NOT_RESOLVED"]) and attempt < MAX_RETRIES:
+                    print(f"[WARN] Network error on attempt {attempt} ({err[:40]}), retrying in 60s...")
                     time.sleep(60)
                 else:
                     browser.close()
