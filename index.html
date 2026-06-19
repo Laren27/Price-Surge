@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Surge · Zomato Dynamic Pricing Intelligence</title>
+  <meta name="description" content="An end-to-end data pipeline tracking live restaurant price changes on Zomato — built with Playwright, PostgreSQL, FastAPI, and Power BI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — edit these to retheme the entire page
+       ============================================================ */
+    :root {
+      --bg:          #06101F;   /* canvas background */
+      --surface:     #0E1E33;   /* card / node background */
+      --surface-deep:#0A1628;   /* deeper surface (insights) */
+      --red:         #E23744;   /* Zomato Red — primary accent */
+      --blue:        #2D7DD2;   /* Deep Blue — secondary accent */
+      --text:        #E8EDF2;   /* primary text */
+      --text-muted:  rgba(232,237,242,0.55);  /* secondary text */
+      --text-faint:  rgba(232,237,242,0.35);  /* hints / eyebrows */
+      --border:      rgba(255,255,255,0.08);  /* default border */
+      --border-hover:rgba(226,55,68,0.4);     /* red hover border */
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+    nav {
+      padding: 20px 0;
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(6,16,31,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* EDIT: Change project name in nav */
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--red);
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero { padding: 96px 0 80px; }
+
+    /* EDIT: hero-label — the small tag above the title */
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--red);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* EDIT: hero-title — main headline. Use <span> for red highlight */
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 5.5vw, 58px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    .hero-title span { color: var(--red); }
+
+    /* EDIT: hero-sub — one or two sentence description */
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 540px;
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+
+    /* EDIT: .badge items — tech stack badges in hero */
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      border: 0.5px solid rgba(255,255,255,0.14);
+      color: rgba(232,237,242,0.65);
+      letter-spacing: 0.04em;
+    }
+
+    /* ============================================================
+       SHARED SECTION STYLES
+       ============================================================ */
+    section { padding: 80px 0; }
+    section + section { border-top: 0.5px solid var(--border); }
+
+    .section-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 48px;
+    }
+
+    /* ============================================================
+       PIPELINE / ARCHITECTURE
+       ============================================================ */
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 12px;
+    }
+
+    /* EDIT: .pipe-node — each step in the pipeline.
+       Add data-idx sequentially (0,1,2...) and onclick="selectNode(N)".
+       .local = dashed border = runs on local machine */
+    .pipe-node {
+      flex: 0 0 auto;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 18px;
+      width: 148px;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      user-select: none;
+    }
+    .pipe-node:hover  { border-color: var(--border-hover); transform: translateY(-2px); }
+    .pipe-node.active { border-color: var(--red); }
+    .pipe-node.local  { border-style: dashed; }
+
+    .pipe-icon  { font-size: 18px; margin-bottom: 10px; }
+    .pipe-name  { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .pipe-desc  { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+    .pipe-tag   { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--red); margin-top: 8px; letter-spacing: 0.08em; }
+
+    .pipe-arrow { color: rgba(255,255,255,0.18); font-size: 16px; padding: 0 6px; flex-shrink: 0; margin-top: 40px; }
+
+    /* EDIT: pipe-detail content is controlled in JS — see PIPELINE_DETAILS array below */
+    .pipe-detail {
+      margin-top: 24px;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-left: 2px solid var(--red);
+      border-radius: 8px;
+      padding: 20px 24px;
+      min-height: 72px;
+      font-size: 13px;
+      color: rgba(232,237,242,0.72);
+      line-height: 1.85;
+      transition: opacity 0.15s;
+    }
+    .pipe-detail strong { color: var(--text); font-weight: 500; }
+    .pipe-detail code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: rgba(255,255,255,0.07);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--blue);
+    }
+
+    /* ============================================================
+       FINDINGS
+       ============================================================ */
+
+    /* EDIT: finding-card — add/remove cards for your numbers */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+    .finding-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+    }
+    .finding-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--red);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .finding-label {
+      font-size: 12px;
+      color: rgba(232,237,242,0.5);
+      line-height: 1.55;
+    }
+
+    /* EDIT: insight items — plain language findings */
+    .insight-list { display: flex; flex-direction: column; gap: 12px; }
+    .insight {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--surface-deep);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-size: 13px;
+      color: rgba(232,237,242,0.7);
+    }
+    .insight-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+    .insight strong { color: var(--text); font-weight: 500; }
+
+    /* ============================================================
+       TECH STACK
+       ============================================================ */
+
+    /* EDIT: tech-item — add/remove technologies */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .tech-item {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tech-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .tech-name { font-size: 13px; font-weight: 500; }
+    .tech-role { font-size: 11px; color: rgba(232,237,242,0.4); margin-top: 2px; }
+
+    /* ============================================================
+       CTA / LINKS
+       ============================================================ */
+
+    /* EDIT: href values in .cta-btn links below in the HTML */
+    .links-row { display: flex; flex-wrap: wrap; gap: 14px; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .cta-primary  { background: var(--red); color: #fff; }
+    .cta-primary:hover  { background: #c82c38; }
+    .cta-secondary {
+      background: transparent;
+      color: rgba(232,237,242,0.8);
+      border: 0.5px solid rgba(255,255,255,0.18);
+    }
+    .cta-secondary:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
+
+    /* live dot animation on API button */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.25; }
+    }
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 28px 0;
+      font-size: 12px;
+      color: rgba(232,237,242,0.28);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    footer span { font-family: 'JetBrains Mono', monospace; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 640px) {
+      .container { padding: 0 20px; }
+      .hero { padding: 64px 0 56px; }
+      .nav-links { display: none; }
+      .pipeline { gap: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+       EDIT: nav-logo text, nav-links anchors
+       ============================================================ -->
+  <nav>
+    <div class="container nav-inner">
+      <span class="nav-logo">PRICE SURGE</span>
+      <div class="nav-links">
+        <a href="#pipeline">Architecture</a>
+        <a href="#findings">Findings</a>
+        <a href="#tech">Stack</a>
+        <a href="#links">Links</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ==========================================================
+         HERO
+         EDIT: hero-label, hero-title, hero-sub, badge list
+         ========================================================== -->
+    <section class="hero" id="hero">
+      <div class="hero-label">Data Engineering · Analytics · Real-time Systems</div>
+      <h1 class="hero-title">
+        Zomato Dynamic<br>Pricing <span>Intelligence</span>
+      </h1>
+      <p class="hero-sub">
+        An end-to-end data pipeline that tracks, stores, analyzes, and alerts on live
+        restaurant price changes across Bhubaneswar — automatically, every day.
+      </p>
+      <div class="hero-badges">
+        <span class="badge">Playwright Scraper</span>
+        <span class="badge">PostgreSQL</span>
+        <span class="badge">FastAPI</span>
+        <span class="badge">Power BI</span>
+        <span class="badge">Telegram Alerts</span>
+        <span class="badge">Python Scheduler</span>
+        <span class="badge">SciPy · Stats</span>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         PIPELINE / ARCHITECTURE
+         EDIT: pipe-node blocks here + PIPELINE_DETAILS array in JS
+         .local class = dashed border (runs on local machine)
+         ========================================================== -->
+    <section id="pipeline">
+      <div class="section-eyebrow">System Architecture</div>
+      <h2 class="section-title">How the pipeline works</h2>
+
+      <div class="pipeline">
+
+        <div class="pipe-node local active" data-idx="0" onclick="selectNode(0)">
+          <div class="pipe-icon">🎭</div>
+          <div class="pipe-name">Scraper</div>
+          <div class="pipe-desc">Playwright + iPhone 13 Pro emulation</div>
+          <div class="pipe-tag">LOCAL · headless=False</div>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node" data-idx="1" onclick="selectNode(1)">
+          <div class="pipe-icon">🗄️</div>
+          <div class="pipe-name">PostgreSQL</div>
+          <div class="pipe-desc">Prices, weather, sessions joined at write time</div>
+          <div class="pipe-tag">72K+ ROWS</div>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node" data-idx="2" onclick="selectNode(2)">
+          <div class="pipe-icon">⚡</div>
+          <div class="pipe-name">Analytics</div>
+          <div class="pipe-desc">10 Python scripts via atomic PL/pgSQL block</div>
+          <div class="pipe-tag">run_all.py</div>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node" data-idx="3" onclick="selectNode(3)">
+          <div class="pipe-icon">🔌</div>
+          <div class="pipe-name">FastAPI</div>
+          <div class="pipe-desc">10 REST endpoints serving analytics data</div>
+          <div class="pipe-tag">10 ENDPOINTS</div>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node" data-idx="4" onclick="selectNode(4)">
+          <div class="pipe-icon">📊</div>
+          <div class="pipe-name">Power BI</div>
+          <div class="pipe-desc">7-page interactive dashboard with DAX measures</div>
+          <div class="pipe-tag">7 PAGES</div>
+        </div>
+
+        <div class="pipe-arrow">→</div>
+
+        <div class="pipe-node" data-idx="5" onclick="selectNode(5)">
+          <div class="pipe-icon">🔔</div>
+          <div class="pipe-name">Telegram</div>
+          <div class="pipe-desc">5 automated price surge alerts via scheduler</div>
+          <div class="pipe-tag">5 ALERT TYPES</div>
+        </div>
+
+      </div>
+
+      <!-- Detail panel — content set by JS below -->
+      <div class="pipe-detail" id="pipeDetail"></div>
+    </section>
+
+    <!-- ==========================================================
+         FINDINGS
+         EDIT: finding-card blocks (num + label) and insight items
+         ========================================================== -->
+    <section id="findings">
+      <div class="section-eyebrow">Key Findings</div>
+      <h2 class="section-title">What the data revealed</h2>
+
+      <div class="findings-grid">
+
+        <div class="finding-card">
+          <div class="finding-num">214</div>
+          <div class="finding-label">Valid price change events after quality filters</div>
+        </div>
+
+        <div class="finding-card">
+          <div class="finding-num">54.1</div>
+          <div class="finding-label">Faasos Dynamic Pricing Index — #1 most volatile</div>
+        </div>
+
+        <div class="finding-card">
+          <div class="finding-num">73.7%</div>
+          <div class="finding-label">Of market shows zero dynamic pricing activity</div>
+        </div>
+
+        <div class="finding-card">
+          <div class="finding-num">18.96%</div>
+          <div class="finding-label">Weekend price premium for Wow! Momo (#2 DPI)</div>
+        </div>
+
+        <div class="finding-card">
+          <div class="finding-num">0 / 19</div>
+          <div class="finding-label">Restaurants with significant weather price effect</div>
+        </div>
+
+        <div class="finding-card">
+          <div class="finding-num">72K+</div>
+          <div class="finding-label">Total observations across 19 restaurants</div>
+        </div>
+
+      </div>
+
+      <div class="insight-list">
+
+        <div class="insight">
+          <div class="insight-dot"></div>
+          <span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — Faasos alone accounts for the majority of all price change events (167 of 214), suggesting the practice is brand-level policy, not a platform-wide norm.</span>
+        </div>
+
+        <div class="insight">
+          <div class="insight-dot"></div>
+          <span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span>
+        </div>
+
+        <div class="insight">
+          <div class="insight-dot"></div>
+          <span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — Wow! Momo shows an 18.96% weekend uplift while most competitors remain fully static.</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         TECH STACK
+         EDIT: tech-item blocks (dot color, name, role)
+         ========================================================== -->
+    <section id="tech">
+      <div class="section-eyebrow">Technology</div>
+      <h2 class="section-title">Built with</h2>
+
+      <div class="tech-grid">
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#3776AB"></div>
+          <div>
+            <div class="tech-name">Python</div>
+            <div class="tech-role">Core pipeline language</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#2D8CFF"></div>
+          <div>
+            <div class="tech-name">Playwright</div>
+            <div class="tech-role">Browser automation</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#336791"></div>
+          <div>
+            <div class="tech-name">PostgreSQL</div>
+            <div class="tech-role">Primary database</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#009688"></div>
+          <div>
+            <div class="tech-name">FastAPI</div>
+            <div class="tech-role">REST API layer</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#F2C811"></div>
+          <div>
+            <div class="tech-name">Power BI</div>
+            <div class="tech-role">Dashboard & DAX</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#E23744"></div>
+          <div>
+            <div class="tech-name">Telegram API</div>
+            <div class="tech-role">Alert delivery</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#FF6B35"></div>
+          <div>
+            <div class="tech-name">OpenWeatherMap</div>
+            <div class="tech-role">Weather context</div>
+          </div>
+        </div>
+
+        <div class="tech-item">
+          <div class="tech-dot" style="background:#5C6BC0"></div>
+          <div>
+            <div class="tech-name">SciPy · Stats</div>
+            <div class="tech-role">Hypothesis testing</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         LINKS / CTA
+         EDIT: href values on the three buttons below
+         ========================================================== -->
+    <section id="links">
+      <div class="section-eyebrow">Explore the project</div>
+      <h2 class="section-title" style="margin-bottom:28px;">See it in action</h2>
+      <div class="links-row">
+
+        <!-- EDIT: replace with your actual GitHub repo URL -->
+        <a class="cta-btn cta-primary" href="https://github.com/Laren27/Price-Surge" target="_blank" rel="noopener">
+          ⬡ View on GitHub
+        </a>
+
+        <!-- EDIT: replace with your Render / Railway API URL once deployed -->
+        <a class="cta-btn cta-secondary" href="https://YOUR_API_URL/docs" target="_blank" rel="noopener">
+          <span class="live-dot"></span> Live API Docs
+        </a>
+
+        <!-- EDIT: replace with your LinkedIn or portfolio URL -->
+        <a class="cta-btn cta-secondary" href="https://linkedin.com/in/YOUR_PROFILE" target="_blank" rel="noopener">
+          ↗ LinkedIn
+        </a>
+
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+  <!-- ============================================================
+       FOOTER
+       EDIT: project name + your name below
+       ============================================================ -->
+  <footer>
+    <div class="container footer-inner">
+      <span>Price Surge · Zomato Dynamic Pricing Intelligence</span>
+      <span>Built by Laren · Bhubaneswar, India</span>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+       PIPELINE DETAIL CONTENT
+       EDIT: each string in PIPELINE_DETAILS corresponds to a node
+       Index 0 = Scraper, 1 = PostgreSQL, 2 = Analytics,
+             3 = FastAPI,  4 = Power BI,  5 = Telegram
+       Use <strong> for bold, <code> for inline code
+       ============================================================ -->
+  <script>
+    const PIPELINE_DETAILS = [
+      /* 0 — Scraper */
+      `<strong>Playwright Scraper</strong> — Runs at 7 fixed clock slots daily (10AM–10PM). Uses iPhone 13 Pro browser emulation with Bhubaneswar geolocation to extract menu data from Zomato's Redux SSR state blob (<code>window.__PRELOADED_STATE__</code>). Double-escaped JSON parsed via <code>.encode('utf-8').decode('unicode_escape')</code>. Requires <code>headless=False</code> to bypass detection — intentionally kept local. Handles network retries (<code>MAX_RETRIES=3</code>, 60s sleep) for Playwright errors like <code>ERR_NETWORK_CHANGED</code>.`,
+
+      /* 1 — PostgreSQL */
+      `<strong>PostgreSQL Database</strong> — Stores 72K+ rows across <code>prices</code>, <code>weather</code>, and pre-computed analytics tables. A shared <code>scrape_session_id</code> — generated once per scheduler run and passed via environment variable — enables exact price-weather joins across tables. Backed up via <code>pg_dump</code>; a seed SQL file in the repo lets anyone restore the full dataset instantly.`,
+
+      /* 2 — Analytics */
+      `<strong>Analytics Engine</strong> — 10 Python scripts (DPI, rain premium, weekend premium, stability score, synchronized pricing, hourly patterns, category sensitivity, temperature effect, and more) orchestrated as a single atomic PL/pgSQL block in <code>refresh_analytics.sql</code>, executed via <code>run_all.py</code>. All statistical scores (Mann-Whitney U, Kruskal-Wallis, p-values) are pre-computed in Python — not DAX.`,
+
+      /* 3 — FastAPI */
+      `<strong>FastAPI Backend</strong> — 10 REST endpoints at <code>src/api/</code> serving pre-computed analytics data. Uses <code>RealDictCursor</code> for native Postgres-to-JSON serialization. <code>Optional[type]=None</code> handles nullable columns cleanly in Pydantic models. Run locally via <code>uvicorn src.api.main:app --reload</code> from the project root. Auto-generates Swagger UI at <code>/docs</code>.`,
+
+      /* 4 — Power BI */
+      `<strong>Power BI Dashboard</strong> — 7-page interactive dashboard: Executive Summary, Dynamic Pricing Index leaderboard, Weather Intel, Stability & Volatility, Time Intel, Category Intel, and a hidden Drillthrough deep-dive page. Design system: dark navy canvas, Zomato Red primary, Syne + DM Sans fonts. All statistical scores pre-calculated upstream; DAX handles display logic, formatting, and conditional colors only.`,
+
+      /* 5 — Telegram */
+      `<strong>Telegram Alert System</strong> — 5 automated alert types (A–E) wired into the scheduler: price surge detection, volatility spikes, weekend premium triggers, DPI leader changes, and daily market summary. Key fix: PostgreSQL installer sets <code>REQUESTS_CA_BUNDLE</code> env var breaking SSL — resolved with <code>verify=False</code> + <code>urllib3.disable_warnings()</code>. <code>TELEGRAM_CHAT_ID</code> cast as <code>int()</code>.`
+    ];
+
+    function selectNode(idx) {
+      document.querySelectorAll('.pipe-node').forEach((n, i) => {
+        n.classList.toggle('active', i === idx);
+      });
+      const detail = document.getElementById('pipeDetail');
+      detail.style.opacity = '0';
+      setTimeout(() => {
+        detail.innerHTML = PIPELINE_DETAILS[idx];
+        detail.style.opacity = '1';
+      }, 120);
+    }
+
+    /* Show first node detail on load */
+    selectNode(0);
+  </script>
+
+</body>
+</html>
