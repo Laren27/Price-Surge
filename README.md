@@ -42,8 +42,8 @@ A fully automated data pipeline that monitors **19 restaurants on Zomato** acros
 No manual work. No sampling. Just a scheduler that wakes up, scrapes, stores, and goes back to sleep — every single day.
 
 ```
-Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard
-                                                             → Telegram Alerts
+Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard → Telegram Alerts
+
 ```
 
 **The stack:** Python · Playwright · PostgreSQL · FastAPI · Power BI · Telegram Bot API · OpenWeatherMap · SciPy
