@@ -1,0 +1,27 @@
+# ─── Secrets ───────────────────────────────
+.env
+zomato_cookies.json
+
+# ─── Data files (too large for GitHub) ─────
+data/raw/
+data/processed/
+
+# ─── Logs ───────────────────────────────────
+logs/
+
+# ─── Python auto-generated ──────────────────
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# ─── Virtual environment ────────────────────
+venv/
+.venv/
+env/
+
+# ─── VS Code settings ───────────────────────
+.vscode/
+
+# ─── Debug screenshots from scraper ─────────
+*.png
