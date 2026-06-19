@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     base = fetch_data()
 
-    weights = {'rpi': 0.35, 'wpi': 0.25, 'temp': 0.15, 'pvs': 0.25}
+    weights = {'rpi': 0.30, 'wpi': 0.20, 'temp': 0.10, 'pvs': 0.50}
 
     base['rpi_norm']        = normalize_series(base['rpi'])
     base['wpi_norm']        = normalize_series(base['wpi'])
