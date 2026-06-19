@@ -2,11 +2,28 @@
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
-[![Landing Page](https://img.shields.io/badge/Landing%20Page-Live-E23744?style=flat-square)](https://laren27.github.io/Price-Surge)
-[![Live API](https://img.shields.io/badge/API%20Docs-Live-22c55e?style=flat-square)](https://price-surge.onrender.com/docs)
-[![License](https://img.shields.io/badge/License-MIT-2D7DD2?style=flat-square)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=flat-square)](https://fastapi.tiangolo.com)
+**TL;DR:** Automated end-to-end pipeline monitoring Zomato prices across 19 restaurants — 72K+ observations, 214 price change events, statistical proof that weather has zero effect on pricing, and one brand responsible for 78% of all dynamic pricing activity.
+
+---
+
+[![Landing Page](https://img.shields.io/badge/🌐%20Landing%20Page-Live-E23744?style=for-the-badge)](https://laren27.github.io/Price-Surge)
+[![Live API](https://img.shields.io/badge/⚡%20Live%20API-Swagger%20UI-22c55e?style=for-the-badge)](https://price-surge.onrender.com/docs)
+[![License](https://img.shields.io/badge/License-MIT-2D7DD2?style=for-the-badge)](LICENSE)
+
+---
+
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-Browser%20Automation-2D8CFF?style=flat-square&logo=playwright&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?style=flat-square&logo=postgresql&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=flat-square&logo=powerbi&logoColor=black)
+![Supabase](https://img.shields.io/badge/Supabase-Cloud%20DB-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+![Render](https://img.shields.io/badge/Render-Deployed-46E3B7?style=flat-square&logo=render&logoColor=black)
+![Telegram](https://img.shields.io/badge/Telegram-Alerts-26A5E4?style=flat-square&logo=telegram&logoColor=white)
+![OpenWeatherMap](https://img.shields.io/badge/OpenWeatherMap-Weather%20API-FF6B35?style=flat-square&logo=openweathermap&logoColor=white)
+![SciPy](https://img.shields.io/badge/SciPy-Statistical%20Tests-8CAAE6?style=flat-square&logo=scipy&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-150458?style=flat-square&logo=pandas&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Hosted-181717?style=flat-square&logo=github&logoColor=white)
 
 ---
 
@@ -55,10 +72,10 @@ After collecting **72,000+ price observations** across 19 restaurants over sever
 ### The Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         SCHEDULER                               │
+┌────────────────────────────────────────────────────────────────┐
+│                         SCHEDULER                              │
 │           Fixed slots: 10:00 12:00 14:00 16:00                 │
-│                        18:00 20:00 22:00                        │
+│                        18:00 20:00 22:00                       │
 │           Exits at 23:00 · MIN_GAP = 60 minutes                │
 └──────────────┬──────────────────┬──────────────────────────────┘
                │                  │
@@ -73,7 +90,7 @@ After collecting **72,000+ price observations** across 19 restaurants over sever
     │  headless=False  │  │                  │
     └────────┬─────────┘  └────────┬─────────┘
              │                     │
-             │   scrape_session_id (shared env var)
+             │                     |  scrape_session_id (shared env var)
              │                     │
              ▼                     ▼
     ┌─────────────────────────────────────────┐
@@ -227,6 +244,67 @@ Price-Surge/
 
 ---
 
+## Try It — Quick API Examples
+
+> The API is live. No setup needed. First request may take 30–60s to wake up (free tier).
+
+**Get the full DPI leaderboard:**
+```bash
+curl https://price-surge.onrender.com/analysis/restaurant-rankings
+```
+```json
+[
+  {
+    "restaurant_name": "Faasos",
+    "dpi_score": 54.1,
+    "rpi_score": 0.12,
+    "wpi_score": 0.08,
+    "price_change_count": 167,
+    "rank": 1
+  },
+  {
+    "restaurant_name": "Wow! Momo",
+    "dpi_score": 33.6,
+    "rpi_score": 0.04,
+    "wpi_score": 0.18,
+    "price_change_count": 18,
+    "rank": 2
+  }
+]
+```
+
+**Get hourly price patterns:**
+```bash
+curl https://price-surge.onrender.com/analysis/hourly-patterns
+```
+```json
+[
+  { "hour_of_day": 10, "avg_price_change_pct": 0.012 },
+  { "hour_of_day": 12, "avg_price_change_pct": 0.031 },
+  { "hour_of_day": 18, "avg_price_change_pct": 0.028 },
+  { "hour_of_day": 22, "avg_price_change_pct": 0.009 }
+]
+```
+
+**Get rain premium analysis:**
+```bash
+curl https://price-surge.onrender.com/analysis/rain-premium
+```
+```json
+[
+  {
+    "restaurant_name": "Faasos",
+    "rain_premium_pct": 1.2,
+    "p_value": 0.43,
+    "significant": false
+  }
+]
+```
+
+> Full interactive docs at [`/docs`](https://price-surge.onrender.com/docs) — try every endpoint in the browser.
+
+---
+
 ## Dynamic Pricing Index (DPI)
 
 The DPI is a composite score I designed to rank restaurants by how aggressively they practice dynamic pricing. It combines four signals:
@@ -236,7 +314,7 @@ DPI = (RPI × 0.20) + (WPI × 0.20) + (Temp × 0.10) + (PVS × 0.50)
 ```
 
 | Component | Weight | What it measures |
-|-----------|--------|-----------------|
+|-----------|--------|------------------|
 | RPI — Rain Price Index | 20% | Price uplift during rain vs clear weather |
 | WPI — Weekend Price Index | 20% | Price uplift on weekends vs weekdays |
 | Temp — Temperature Effect | 10% | Price correlation with temperature bands |
