@@ -269,14 +269,14 @@ Price-Surge/
 │   ├── analytics/
 │   │   ├── run_all.py          # Analytics orchestrator — single psycopg2 session + Pearson
 │   │   ├── refresh_analytics.sql  # Active pipeline — atomic PL/pgSQL DO $$ block (15 tables)
-│   │   ├── dynamic_pricing_index.py   # DEPRECATED — reference only, not part of active pipeline
-│   │   ├── rain_premium.py            # DEPRECATED — reference only
-│   │   ├── weekend_premium.py         # DEPRECATED — reference only
-│   │   ├── stability_score.py         # DEPRECATED — reference only
-│   │   ├── synchronized_pricing.py    # DEPRECATED — reference only
-│   │   ├── hourly_patterns.py         # DEPRECATED — reference only
-│   │   ├── category_sensitivity.py    # DEPRECATED — reference only
-│   │   └── temperature_effect.py      # DEPRECATED — reference only
+│   │   ├── dynamic_pricing_index.py   # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── rain_premium.py            # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── weekend_premium.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── stability_score.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── synchronized_pricing.py    # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── hourly_patterns.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── category_sensitivity.py    # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   └── temperature_effect.py      # DEPRECATED — reference only for standalone debugging, not part of active pipeline
 │   │
 │   ├── api/
 │   │   ├── main.py             # FastAPI app entry point
