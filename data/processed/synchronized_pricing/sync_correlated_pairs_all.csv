@@ -1,4 +1,5 @@
 restaurant_a,restaurant_b,correlation,strength
-Biriyani Box,Wow! Momo,-0.638,Moderate
-Biriyani Box,Faasos,-0.8309,Strong
+Faasos,Kake Di Hatti,1.0,Strong
+Biriyani Box,Wow! Momo,-0.5967,Moderate
+Biriyani Box,Faasos,-0.8725,Strong
 Kake Di Hatti,Wow! Momo,-1.0,Strong

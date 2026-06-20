@@ -1,7 +1,7 @@
 restaurant,restaurant_category,time_window,total_change_events,avg_price_change_pct
 Behrouz Biryani,biryani,1-Morning Off-Peak,0,0.0
 Behrouz Biryani,biryani,2-Lunch Peak,0,0.0
-Behrouz Biryani,biryani,3-Afternoon Off-Peak,0,0.0
+Behrouz Biryani,biryani,3-Afternoon Off-Peak,1,4.62
 Behrouz Biryani,biryani,4-Dinner Peak,0,0.0
 Behrouz Biryani,biryani,5-Late Night Off-Peak,0,0.0
 Biggies Burger,fried_chicken,1-Morning Off-Peak,0,0.0
@@ -46,7 +46,7 @@ Darjeeling Kitchen,momos,4-Dinner Peak,0,0.0
 Darjeeling Kitchen,momos,5-Late Night Off-Peak,0,0.0
 Faasos,rolls,1-Morning Off-Peak,0,0.0
 Faasos,rolls,2-Lunch Peak,9,8.9
-Faasos,rolls,3-Afternoon Off-Peak,167,5.64
+Faasos,rolls,3-Afternoon Off-Peak,169,5.71
 Faasos,rolls,4-Dinner Peak,3,-28.21
 Faasos,rolls,5-Late Night Off-Peak,10,7.18
 Kake Da Minar,paneer,1-Morning Off-Peak,0,0.0
@@ -86,8 +86,8 @@ Truptee Legacy,paneer,4-Dinner Peak,0,0.0
 Truptee Legacy,paneer,5-Late Night Off-Peak,0,0.0
 Wow! Momo,momos,1-Morning Off-Peak,4,2.19
 Wow! Momo,momos,2-Lunch Peak,13,4.94
-Wow! Momo,momos,3-Afternoon Off-Peak,44,1.76
-Wow! Momo,momos,4-Dinner Peak,13,3.82
+Wow! Momo,momos,3-Afternoon Off-Peak,45,2.37
+Wow! Momo,momos,4-Dinner Peak,15,1.09
 Wow! Momo,momos,5-Late Night Off-Peak,14,6.54
 Zam Zam Grills,rolls,1-Morning Off-Peak,0,0.0
 Zam Zam Grills,rolls,2-Lunch Peak,0,0.0

@@ -1,5 +1,5 @@
 restaurant,category,cool_records,normal_records,hot_records,avg_price_hot,avg_price_normal,temp_effect_score,significant,verdict
-Behrouz Biryani,biryani,0,0,0,0.0,0.0,0.0,False,No significant change
+Behrouz Biryani,biryani,0,0,1,4.62,0.0,4.62,False,No significant change
 Biggies Burger,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
 Biriyani Box,biryani,0,1,6,3.52,-17.72,3.52,True,Price rises in heat
 Biryani By Kilo,biryani,0,0,0,0.0,0.0,0.0,False,No significant change
@@ -8,7 +8,7 @@ Burger King,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
 Burger Singh,fried_chicken,0,0,12,-20.08,0.0,-20.08,True,Price drops in heat
 Burnt,momos,0,0,0,0.0,0.0,0.0,False,No significant change
 Darjeeling Kitchen,momos,0,0,0,0.0,0.0,0.0,False,No significant change
-Faasos,rolls,0,14,175,5.48,3.5,5.48,True,Price rises in heat
+Faasos,rolls,0,14,177,5.55,3.5,5.55,True,Price rises in heat
 Kake Da Minar,paneer,0,0,0,0.0,0.0,0.0,False,No significant change
 Kake Di Hatti,paneer,0,11,1,-5.73,8.59,-5.73,False,No significant change
 KFC,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
@@ -16,5 +16,5 @@ Mughlai House,biryani,0,0,0,0.0,0.0,0.0,False,No significant change
 Rolls World,rolls,0,0,0,0.0,0.0,0.0,False,No significant change
 Taste of China,momos,0,0,0,0.0,0.0,0.0,False,No significant change
 Truptee Legacy,paneer,0,0,0,0.0,0.0,0.0,False,No significant change
-Wow! Momo,momos,0,31,57,2.6,4.63,2.6,True,Price rises in heat
+Wow! Momo,momos,0,33,58,3.06,3.34,3.06,True,Price rises in heat
 Zam Zam Grills,rolls,0,0,0,0.0,0.0,0.0,False,No significant change

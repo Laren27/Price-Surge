@@ -1,19 +1,19 @@
 restaurant,restaurant_category,peak_hour,peak_change_pct
-Behrouz Biryani,biryani,10,0.0
-Biggies Burger,fried_chicken,10,0.0
+Behrouz Biryani,biryani,16,4.62
+Biggies Burger,fried_chicken,22,0.0
 Biriyani Box,biryani,16,21.54
 Biryani By Kilo,biryani,10,0.0
-Bob's Momo,momos,19,0.0
+Bob's Momo,momos,22,0.0
 Burger King,fried_chicken,12,0.0
 Burger Singh,fried_chicken,22,0.0
-Burnt,momos,19,0.0
+Burnt,momos,16,0.0
 Darjeeling Kitchen,momos,10,0.0
-Faasos,rolls,15,9.12
+Faasos,rolls,14,9.3
 Kake Da Minar,paneer,13,0.0
 Kake Di Hatti,paneer,20,8.59
-KFC,fried_chicken,10,0.0
+KFC,fried_chicken,16,0.0
 Mughlai House,biryani,10,0.0
-Rolls World,rolls,15,0.0
+Rolls World,rolls,16,0.0
 Taste of China,momos,11,0.0
 Truptee Legacy,paneer,13,0.0
 Wow! Momo,momos,19,25.51
