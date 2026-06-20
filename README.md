@@ -1,11 +1,11 @@
 # Price Surge · Zomato Dynamic Pricing Intelligence
 
-**Role:** Solo developer & data engineer — built the scraper, analytics pipeline, FAST API, and dashboard end-to-end.
+**Role:** Solo developer & data engineer — built the scraper, analytics pipeline, FastAPI backend, and dashboard end-to-end.
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
 
-**TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public FAST API as new data is collected.
+**TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public FastAPI REST API as new data is collected.
 
 ---
 
@@ -18,7 +18,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-Browser%20Automation-2D8CFF?style=flat-square&logo=playwright&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?style=flat-square&logo=postgresql&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-009688?style=flat-square&logo=fastapi&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=flat-square&logo=powerbi&logoColor=black)
 ![Supabase](https://img.shields.io/badge/Supabase-Cloud%20DB-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-Deployed-46E3B7?style=flat-square&logo=render&logoColor=black)
@@ -258,8 +258,9 @@ Price-Surge/
 ├── .gitattributes              # Git line-ending and file-handling rules
 │
 ├── img/
-│   └── dashboard.png           # Power BI dashboard screenshot
-│
+│   ├── preview.gif             # Dashboard preview GIF
+│   ├── dashboard.png           # Executive Summary preview png
+|
 ├── index.html                  # Project landing page (GitHub Pages)
 ├── requirements.txt            # Python dependencies
 │
@@ -418,7 +419,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=zomato_prices
 DB_USER=postgres
-DB_PASSWORD=your_password
+POSTGRES_PASSWORD=your_password
 TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
 OPENWEATHER_API_KEY=your_api_key
