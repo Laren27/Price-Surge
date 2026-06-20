@@ -29,7 +29,9 @@
 
 ---
 
-![Dashboard screenshot](path/to/dashboard-screenshot.png)
+<p align="center">
+  <img src="img/dashboard.png" alt="Power BI Pricing Intelligence Dashboard Hub" width="900">
+</p>
 
 ---
 
