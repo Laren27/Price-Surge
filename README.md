@@ -30,7 +30,6 @@
 ---
 
 ![Dashboard screenshot](path/to/dashboard-screenshot.png)
-*Replace this path with a screenshot or GIF of the Power BI dashboard or a sample API response.*
 
 ---
 
@@ -80,8 +79,7 @@ A fully automated data pipeline that monitors **19 restaurants on Zomato** acros
 No manual work. No sampling. Just a scheduler that wakes up, scrapes, stores, and goes back to sleep — every single day.
 
 ```
-Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard
-                                                             → Telegram Alerts
+Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard → Telegram Alerts
 ```
 
 **The stack:** Python · Playwright · PostgreSQL · FastAPI · Power BI · Telegram Bot API · OpenWeatherMap · SciPy
@@ -93,7 +91,7 @@ Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI 
 After collecting **1.4M+ price observations** across 19 restaurants over several weeks:
 
 | Finding | Result |
-|---|---|
+|---------|--------|
 | Dynamic pricing concentration | **5 of 19** restaurants account for all price change events |
 | Market static rate | **73.7%** of restaurants show zero dynamic pricing |
 | Weather effect on prices | **None** — 0/19 restaurants show significant rain or temperature effect (p > 0.05) |
@@ -112,7 +110,7 @@ After collecting **1.4M+ price observations** across 19 restaurants over several
 The dataset contains menu prices and weather readings only — no order data, no session data, no demand signals.
 
 | Incorrect Claim | Why It Cannot Be Made |
-|---|---|
+|-----------------|-----------------------|
 | "Rain increases biryani demand" | No order data collected |
 | "Customers prefer momos during bad weather" | No customer behaviour data |
 | "Restaurant X loses revenue when it surges" | No revenue data available |
@@ -127,7 +125,7 @@ Every finding in this project is a **pricing observation**, not a demand conclus
 Statistical tests were selected to match the data's non-normal distribution. No normality assumption was made.
 
 | Test | Applied To | Why |
-|---|---|---|
+|------|------------|-----|
 | **Mann-Whitney U** | Price distributions: rain vs. no-rain per restaurant | Non-parametric comparison of two independent groups |
 | **Kruskal-Wallis** | Price distributions across three temperature bands (Cool / Normal / Hot) | Non-parametric comparison of three or more groups |
 | **Pearson correlation** | Synchronized pricing detection across restaurant pairs | Computed in-memory via pandas; threshold \|r\| ≥ 0.4, min_periods=3 |
@@ -141,10 +139,10 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 ### The Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         SCHEDULER                               │
+┌────────────────────────────────────────────────────────────────┐
+│                         SCHEDULER                              │
 │           Fixed slots: 10:00 12:00 14:00 16:00                 │
-│                        18:00 20:00 22:00                        │
+│                        18:00 20:00 22:00                       │
 │           Exits at 23:00 · MIN_GAP = 60 minutes                │
 └──────────────┬──────────────────┬──────────────────────────────┘
                │                  │
@@ -159,7 +157,7 @@ Statistical tests were selected to match the data's non-normal distribution. No 
     │  headless=False  │  │                  │
     └────────┬─────────┘  └────────┬─────────┘
              │                     │
-             │   scrape_session_id (shared env var)
+             │                     |    scrape_session_id (shared env var)
              │                     │
              ▼                     ▼
     ┌─────────────────────────────────────────┐
@@ -357,7 +355,7 @@ DPI = (PVS × 0.50) + (RPI × 0.20) + (WPI × 0.20) + (Temp × 0.10)
 ```
 
 | Component | Weight | What it measures |
-|-----------|--------|-----------------|
+|-----------|--------|------------------|
 | PVS — Price Volatility Score | 50% | Frequency of genuine price change events (normalized) |
 | RPI — Rain Price Index | 20% | Price uplift during rain vs. clear weather |
 | WPI — Weekend Price Index | 20% | Price uplift on weekends vs. weekdays |
