@@ -267,8 +267,8 @@ Price-Surge/
 │   │   └── save_cookies.py     # One-time cookie capture utility (run before first scrape)
 │   │
 │   ├── analytics/
-│   │   ├── run_all.py          # Analytics orchestrator — single psycopg2 session + Pearson
-│   │   ├── refresh_analytics.sql  # Active pipeline — atomic PL/pgSQL DO $$ block (15 tables)
+│   │   ├── run_all.py                 # Analytics orchestrator — single psycopg2 session + Pearson
+│   │   ├── refresh_analytics.sql      # Active pipeline — atomic PL/pgSQL DO $$ block (15 tables)
 │   │   ├── dynamic_pricing_index.py   # DEPRECATED — reference only for standalone debugging, not part of active pipeline
 │   │   ├── rain_premium.py            # DEPRECATED — reference only for standalone debugging, not part of active pipeline
 │   │   ├── weekend_premium.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
