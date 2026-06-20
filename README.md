@@ -451,7 +451,7 @@ python src/analytics/run_all.py
 - **Collection frequency:** 7 fixed slots daily — 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00
 - **Data per scrape:** All menu items with current prices per restaurant
 - **Observations defined:** Each scrape captures prices for every menu item across all 19 restaurants — typically 100+ items per restaurant per scrape. Total observations accumulate as item-level rows × collection frequency, growing continuously with each scheduled run. Current total observation count is available live via the API rather than stated as a fixed figure here.
-- **Collection status:** Ongoing — the scraper runs on its fixed daily schedule indefinitely, so the dataset grows with every passing day. Numbers quoted in this README reflect methodology, not a frozen snapshot.
+- **Collection status:** Ongoing — the scraper runs on its fixed daily schedule, with data collection expected to continue for several more months toward the project's target dataset size. Numbers quoted in this README reflect methodology, not a frozen snapshot.
 - **Price change filter:** `price > ₹50`, `prev_price > ₹50`, `|diff| ≤ ₹50`, `|diff/prev| ≤ 30%`, gap ≤ 6 hours
 - **Weather data:** Temperature, humidity, and rain condition captured per scrape session via OpenWeatherMap
 - **Session linking:** Scraper and weather collector share a UUID (`scrape_session_id`) generated before each run, enabling exact price-weather joins without timestamp ambiguity
