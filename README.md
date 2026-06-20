@@ -1,5 +1,7 @@
 # Price Surge · Zomato Dynamic Pricing Intelligence
 
+**Role:** Solo developer & data engineer — built the scraper, analytics pipeline, REST API, and dashboard end-to-end.
+
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
 **TL;DR:** Automated end-to-end pipeline monitoring Zomato prices across 19 restaurants — 1.4M+ price observations, Mann-Whitney U and Kruskal-Wallis tests confirming weather has zero effect on pricing (p > 0.05 across all 19 restaurants), dynamic pricing concentrated in just 5 of 19 restaurants, and zero evidence of coordinated pricing across the market.
@@ -27,6 +29,42 @@
 
 ---
 
+![Dashboard screenshot](path/to/dashboard-screenshot.png)
+*Replace this path with a screenshot or GIF of the Power BI dashboard or a sample API response.*
+
+---
+
+## Table of Contents
+
+- [The Question](#the-question)
+- [What I Built](#what-i-built)
+- [Key Findings](#key-findings)
+- [What This Project Does Not Claim](#what-this-project-does-not-claim)
+- [Statistical Methodology](#statistical-methodology)
+- [Architecture](#architecture)
+- [Technical Challenges](#technical-challenges)
+- [Project Structure](#project-structure)
+- [API Reference](#api-reference)
+- [Try It — Quick API Examples](#try-it--quick-api-examples)
+- [Dynamic Pricing Index (DPI)](#dynamic-pricing-index-dpi)
+- [Running Locally](#running-locally)
+- [Data Collection Methodology](#data-collection-methodology)
+
+---
+
+## How to Evaluate Quickly
+
+If you're reviewing this repo and want the fastest path to understanding it, open files in this order:
+
+1. **`src/scraping/zomato_scraper.py`** — the scraper and Redux state extraction logic (the most non-obvious part of the project)
+2. **`src/analytics/run_all.py`** + **`src/analytics/refresh_analytics.sql`** — the analytics orchestration and atomic PL/pgSQL refresh engine
+3. **`src/api/main.py`** + **`src/api/routers/analysis.py`** — the FastAPI endpoints serving the computed analytics
+4. **`scheduler/scheduler.py`** — the 5-iteration scheduler logic (fixed slots, gap guard, retry wrapper)
+
+Or skip the code entirely and just hit the [live API](https://price-surge.onrender.com/docs) — every endpoint is interactive via Swagger UI.
+
+---
+
 ## The Question
 
 Zomato is one of India's largest food delivery platforms. Anecdotally, users report seeing different prices for the same dish at different times of day — higher during lunch hours, during rain, on weekends. But is this actually happening systematically, or is it confirmation bias?
@@ -42,7 +80,8 @@ A fully automated data pipeline that monitors **19 restaurants on Zomato** acros
 No manual work. No sampling. Just a scheduler that wakes up, scrapes, stores, and goes back to sleep — every single day.
 
 ```
-Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard → Telegram Alerts
+Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI Dashboard
+                                                             → Telegram Alerts
 ```
 
 **The stack:** Python · Playwright · PostgreSQL · FastAPI · Power BI · Telegram Bot API · OpenWeatherMap · SciPy
@@ -54,7 +93,7 @@ Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI 
 After collecting **1.4M+ price observations** across 19 restaurants over several weeks:
 
 | Finding | Result |
-|---------|--------|
+|---|---|
 | Dynamic pricing concentration | **5 of 19** restaurants account for all price change events |
 | Market static rate | **73.7%** of restaurants show zero dynamic pricing |
 | Weather effect on prices | **None** — 0/19 restaurants show significant rain or temperature effect (p > 0.05) |
@@ -73,7 +112,7 @@ After collecting **1.4M+ price observations** across 19 restaurants over several
 The dataset contains menu prices and weather readings only — no order data, no session data, no demand signals.
 
 | Incorrect Claim | Why It Cannot Be Made |
-|-----------------|-----------------------|
+|---|---|
 | "Rain increases biryani demand" | No order data collected |
 | "Customers prefer momos during bad weather" | No customer behaviour data |
 | "Restaurant X loses revenue when it surges" | No revenue data available |
@@ -88,7 +127,7 @@ Every finding in this project is a **pricing observation**, not a demand conclus
 Statistical tests were selected to match the data's non-normal distribution. No normality assumption was made.
 
 | Test | Applied To | Why |
-|------|------------|-----|
+|---|---|---|
 | **Mann-Whitney U** | Price distributions: rain vs. no-rain per restaurant | Non-parametric comparison of two independent groups |
 | **Kruskal-Wallis** | Price distributions across three temperature bands (Cool / Normal / Hot) | Non-parametric comparison of three or more groups |
 | **Pearson correlation** | Synchronized pricing detection across restaurant pairs | Computed in-memory via pandas; threshold \|r\| ≥ 0.4, min_periods=3 |
@@ -102,10 +141,10 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 ### The Pipeline
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                         SCHEDULER                              │
+┌─────────────────────────────────────────────────────────────────┐
+│                         SCHEDULER                               │
 │           Fixed slots: 10:00 12:00 14:00 16:00                 │
-│                        18:00 20:00 22:00                       │
+│                        18:00 20:00 22:00                        │
 │           Exits at 23:00 · MIN_GAP = 60 minutes                │
 └──────────────┬──────────────────┬──────────────────────────────┘
                │                  │
@@ -120,7 +159,7 @@ Statistical tests were selected to match the data's non-normal distribution. No 
     │  headless=False  │  │                  │
     └────────┬─────────┘  └────────┬─────────┘
              │                     │
-             │                     |    scrape_session_id (shared env var)
+             │   scrape_session_id (shared env var)
              │                     │
              ▼                     ▼
     ┌─────────────────────────────────────────┐
@@ -318,7 +357,7 @@ DPI = (PVS × 0.50) + (RPI × 0.20) + (WPI × 0.20) + (Temp × 0.10)
 ```
 
 | Component | Weight | What it measures |
-|-----------|--------|------------------|
+|-----------|--------|-----------------|
 | PVS — Price Volatility Score | 50% | Frequency of genuine price change events (normalized) |
 | RPI — Rain Price Index | 20% | Price uplift during rain vs. clear weather |
 | WPI — Weekend Price Index | 20% | Price uplift on weekends vs. weekdays |
@@ -404,11 +443,19 @@ python src/analytics/run_all.py
 - **Restaurants monitored:** 19 restaurants across Bhubaneswar on Zomato
 - **Collection frequency:** 7 fixed slots daily — 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00
 - **Data per scrape:** All menu items with current prices per restaurant
-- **Observations defined:** Each scrape captures prices for ~100+ menu items across 19 restaurants. 72K+ rows in the `prices` table × item-level granularity = 1.4M+ individual price   data points tracked over the collection period.
+- **Observations defined:** Each scrape captures prices for ~100+ menu items across 19 restaurants. 72K+ rows in the `prices` table × item-level granularity = 1.4M+ individual price data points tracked over the collection period.
 - **Price change filter:** `price > ₹50`, `prev_price > ₹50`, `|diff| ≤ ₹50`, `|diff/prev| ≤ 30%`, gap ≤ 6 hours
 - **Weather data:** Temperature, humidity, and rain condition captured per scrape session via OpenWeatherMap
 - **Session linking:** Scraper and weather collector share a UUID (`scrape_session_id`) generated before each run, enabling exact price-weather joins without timestamp ambiguity
 - **Normalization basis:** PVS normalized on `price_change_events` count, not coefficient of variation — corrects for restaurants with high CV but low actual change frequency
+
+---
+
+## Roadmap / Future Improvements
+
+- Docker Compose setup (Postgres + API + seeded sample data) for one-command local evaluation
+- Smoke tests for API endpoints and analytics runner
+- CONTRIBUTING.md with developer quickstart
 
 ---
 
