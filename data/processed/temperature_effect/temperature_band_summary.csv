@@ -1,0 +1,3 @@
+temperature_band,total_records,temp_min,temp_max,avg_price,price_stddev
+Normal,38840,27.0,31.7,244.33,156.95
+Hot,70190,32.6,42.3,243.18,157.2

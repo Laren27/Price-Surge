@@ -1,0 +1,96 @@
+restaurant,restaurant_category,time_window,total_change_events,avg_price_change_pct
+Behrouz Biryani,biryani,1-Morning Off-Peak,0,0.0
+Behrouz Biryani,biryani,2-Lunch Peak,0,0.0
+Behrouz Biryani,biryani,3-Afternoon Off-Peak,0,0.0
+Behrouz Biryani,biryani,4-Dinner Peak,0,0.0
+Behrouz Biryani,biryani,5-Late Night Off-Peak,0,0.0
+Biggies Burger,fried_chicken,1-Morning Off-Peak,0,0.0
+Biggies Burger,fried_chicken,2-Lunch Peak,0,0.0
+Biggies Burger,fried_chicken,3-Afternoon Off-Peak,0,0.0
+Biggies Burger,fried_chicken,4-Dinner Peak,0,0.0
+Biggies Burger,fried_chicken,5-Late Night Off-Peak,0,0.0
+Biriyani Box,biryani,1-Morning Off-Peak,0,0.0
+Biriyani Box,biryani,2-Lunch Peak,1,4.71
+Biriyani Box,biryani,3-Afternoon Off-Peak,3,4.19
+Biriyani Box,biryani,4-Dinner Peak,1,21.54
+Biriyani Box,biryani,5-Late Night Off-Peak,2,-17.72
+Biryani By Kilo,biryani,1-Morning Off-Peak,0,0.0
+Biryani By Kilo,biryani,2-Lunch Peak,0,0.0
+Biryani By Kilo,biryani,3-Afternoon Off-Peak,0,0.0
+Biryani By Kilo,biryani,4-Dinner Peak,0,0.0
+Biryani By Kilo,biryani,5-Late Night Off-Peak,0,0.0
+Bob's Momo,momos,1-Morning Off-Peak,0,0.0
+Bob's Momo,momos,2-Lunch Peak,0,0.0
+Bob's Momo,momos,3-Afternoon Off-Peak,0,0.0
+Bob's Momo,momos,4-Dinner Peak,0,0.0
+Bob's Momo,momos,5-Late Night Off-Peak,0,0.0
+Burger King,fried_chicken,1-Morning Off-Peak,0,0.0
+Burger King,fried_chicken,2-Lunch Peak,0,0.0
+Burger King,fried_chicken,3-Afternoon Off-Peak,0,0.0
+Burger King,fried_chicken,4-Dinner Peak,0,0.0
+Burger King,fried_chicken,5-Late Night Off-Peak,0,0.0
+Burger Singh,fried_chicken,1-Morning Off-Peak,0,0.0
+Burger Singh,fried_chicken,2-Lunch Peak,10,-20.08
+Burger Singh,fried_chicken,3-Afternoon Off-Peak,1,-20.08
+Burger Singh,fried_chicken,4-Dinner Peak,0,0.0
+Burger Singh,fried_chicken,5-Late Night Off-Peak,0,0.0
+Burnt,momos,1-Morning Off-Peak,0,0.0
+Burnt,momos,2-Lunch Peak,0,0.0
+Burnt,momos,3-Afternoon Off-Peak,0,0.0
+Burnt,momos,4-Dinner Peak,0,0.0
+Burnt,momos,5-Late Night Off-Peak,0,0.0
+Darjeeling Kitchen,momos,1-Morning Off-Peak,0,0.0
+Darjeeling Kitchen,momos,2-Lunch Peak,0,0.0
+Darjeeling Kitchen,momos,3-Afternoon Off-Peak,0,0.0
+Darjeeling Kitchen,momos,4-Dinner Peak,0,0.0
+Darjeeling Kitchen,momos,5-Late Night Off-Peak,0,0.0
+Faasos,rolls,1-Morning Off-Peak,0,0.0
+Faasos,rolls,2-Lunch Peak,9,8.9
+Faasos,rolls,3-Afternoon Off-Peak,167,5.64
+Faasos,rolls,4-Dinner Peak,3,-28.21
+Faasos,rolls,5-Late Night Off-Peak,10,7.18
+Kake Da Minar,paneer,1-Morning Off-Peak,0,0.0
+Kake Da Minar,paneer,2-Lunch Peak,0,0.0
+Kake Da Minar,paneer,3-Afternoon Off-Peak,0,0.0
+Kake Da Minar,paneer,4-Dinner Peak,0,0.0
+Kake Da Minar,paneer,5-Late Night Off-Peak,0,0.0
+Kake Di Hatti,paneer,1-Morning Off-Peak,0,0.0
+Kake Di Hatti,paneer,2-Lunch Peak,0,0.0
+Kake Di Hatti,paneer,3-Afternoon Off-Peak,1,-5.73
+Kake Di Hatti,paneer,4-Dinner Peak,11,8.59
+Kake Di Hatti,paneer,5-Late Night Off-Peak,0,0.0
+KFC,fried_chicken,1-Morning Off-Peak,0,0.0
+KFC,fried_chicken,2-Lunch Peak,0,0.0
+KFC,fried_chicken,3-Afternoon Off-Peak,0,0.0
+KFC,fried_chicken,4-Dinner Peak,0,0.0
+KFC,fried_chicken,5-Late Night Off-Peak,0,0.0
+Mughlai House,biryani,1-Morning Off-Peak,0,0.0
+Mughlai House,biryani,2-Lunch Peak,0,0.0
+Mughlai House,biryani,3-Afternoon Off-Peak,0,0.0
+Mughlai House,biryani,4-Dinner Peak,0,0.0
+Mughlai House,biryani,5-Late Night Off-Peak,0,0.0
+Rolls World,rolls,1-Morning Off-Peak,0,0.0
+Rolls World,rolls,2-Lunch Peak,0,0.0
+Rolls World,rolls,3-Afternoon Off-Peak,0,0.0
+Rolls World,rolls,4-Dinner Peak,0,0.0
+Rolls World,rolls,5-Late Night Off-Peak,0,0.0
+Taste of China,momos,1-Morning Off-Peak,0,0.0
+Taste of China,momos,2-Lunch Peak,0,0.0
+Taste of China,momos,3-Afternoon Off-Peak,0,0.0
+Taste of China,momos,4-Dinner Peak,0,0.0
+Taste of China,momos,5-Late Night Off-Peak,0,0.0
+Truptee Legacy,paneer,1-Morning Off-Peak,0,0.0
+Truptee Legacy,paneer,2-Lunch Peak,0,0.0
+Truptee Legacy,paneer,3-Afternoon Off-Peak,0,0.0
+Truptee Legacy,paneer,4-Dinner Peak,0,0.0
+Truptee Legacy,paneer,5-Late Night Off-Peak,0,0.0
+Wow! Momo,momos,1-Morning Off-Peak,4,2.19
+Wow! Momo,momos,2-Lunch Peak,11,3.56
+Wow! Momo,momos,3-Afternoon Off-Peak,44,1.76
+Wow! Momo,momos,4-Dinner Peak,13,3.82
+Wow! Momo,momos,5-Late Night Off-Peak,14,6.54
+Zam Zam Grills,rolls,1-Morning Off-Peak,0,0.0
+Zam Zam Grills,rolls,2-Lunch Peak,0,0.0
+Zam Zam Grills,rolls,3-Afternoon Off-Peak,0,0.0
+Zam Zam Grills,rolls,4-Dinner Peak,0,0.0
+Zam Zam Grills,rolls,5-Late Night Off-Peak,0,0.0

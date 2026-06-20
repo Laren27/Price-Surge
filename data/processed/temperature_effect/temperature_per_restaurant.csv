@@ -1,0 +1,39 @@
+restaurant,restaurant_category,temperature_band,total_records,avg_price
+Behrouz Biryani,biryani,Hot,2404,307.03
+Behrouz Biryani,biryani,Normal,1281,306.16
+Biggies Burger,fried_chicken,Hot,1563,191.92
+Biggies Burger,fried_chicken,Normal,840,191.29
+Biriyani Box,biryani,Hot,3080,199.38
+Biriyani Box,biryani,Normal,1674,200.93
+Biryani By Kilo,biryani,Hot,2123,308.42
+Biryani By Kilo,biryani,Normal,1151,308.55
+Bob's Momo,momos,Hot,1560,341.17
+Bob's Momo,momos,Normal,776,339.09
+Burger King,fried_chicken,Hot,5632,248.98
+Burger King,fried_chicken,Normal,3067,247.69
+Burger Singh,fried_chicken,Hot,3888,175.51
+Burger Singh,fried_chicken,Normal,2223,177.51
+Burnt,momos,Hot,1647,210.63
+Burnt,momos,Normal,899,210.36
+Darjeeling Kitchen,momos,Hot,8636,185.67
+Darjeeling Kitchen,momos,Normal,4695,185.58
+Faasos,rolls,Hot,5890,171.7
+Faasos,rolls,Normal,3113,172.94
+Kake Da Minar,paneer,Hot,3892,311.43
+Kake Da Minar,paneer,Normal,2145,307.45
+Kake Di Hatti,paneer,Hot,6004,231.36
+Kake Di Hatti,paneer,Normal,3250,231.56
+KFC,fried_chicken,Hot,2184,360.09
+KFC,fried_chicken,Normal,1191,361.49
+Mughlai House,biryani,Hot,2949,343.19
+Mughlai House,biryani,Normal,1865,342.81
+Rolls World,rolls,Hot,603,139.98
+Rolls World,rolls,Normal,329,139.91
+Taste of China,momos,Hot,4776,271.64
+Taste of China,momos,Normal,2587,271.64
+Truptee Legacy,paneer,Hot,2863,264.4
+Truptee Legacy,paneer,Normal,1858,266.12
+Wow! Momo,momos,Hot,4968,239.65
+Wow! Momo,momos,Normal,2691,240.05
+Zam Zam Grills,rolls,Hot,5528,263.08
+Zam Zam Grills,rolls,Normal,3205,267.73

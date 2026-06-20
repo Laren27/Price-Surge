@@ -1,0 +1,10 @@
+dish_type,total_change_events,rpi,wpi,sensitivity_score
+Beverage,13,0.0,0.0,2.51
+Biryani,0,0.0,0.0,0.0
+Burger,16,0.0,0.0,5.4
+Combo,0,0.0,0.0,0.0
+Dessert,0,0.0,0.0,0.0
+Fried Chicken,11,0.0,-20.08,-20.08
+Momo,86,-1.4,5.92,3.1
+Paneer,2,0.0,0.0,6.24
+Roll,148,0.0,0.37,5.9

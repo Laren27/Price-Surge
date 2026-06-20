@@ -3,8 +3,6 @@
 zomato_cookies.json
 
 # ─── Data files (too large for GitHub) ─────
-data/raw/
-data/processed/
 
 # ─── Logs ───────────────────────────────────
 logs/
