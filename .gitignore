@@ -20,6 +20,3 @@ env/
 
 # ─── VS Code settings ───────────────────────
 .vscode/
-
-# ─── Debug screenshots from scraper ─────────
-*.png
