@@ -3,7 +3,7 @@ import psycopg2
 import pandas as pd
 import numpy as np
 import sys
-from pathlib import Path
+from pathlib import Path    
 from datetime import datetime
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
@@ -31,9 +31,9 @@ def compute_synchronized_pricing(conn):
     print("[3] Computing synchronized pricing pairs via Python math engine...")
 
     query = """
-        SELECT restaurant, item_name, hour_of_day, is_rainy, pct_change
-        FROM v_price_changes
-        WHERE pct_change IS NOT NULL;
+    SELECT restaurant, hour_of_day, is_rainy, pct_change
+    FROM v_price_changes
+    WHERE pct_change IS NOT NULL;
     """
     df = pd.read_sql(query, conn)
 
@@ -43,23 +43,30 @@ def compute_synchronized_pricing(conn):
         return empty_df, empty_df.copy()
 
     pivot_all  = df.pivot_table(
-        index=['item_name', 'hour_of_day'],
+        index=['hour_of_day'],
         columns='restaurant',
         values='pct_change',
         aggfunc='mean'
     )
     pivot_rain = df[df['is_rainy'] == True].pivot_table(
-        index=['item_name', 'hour_of_day'],
+        index=['hour_of_day'],
         columns='restaurant',
         values='pct_change',
         aggfunc='mean'
     )
+    print(f"    Rows fetched from v_price_changes: {len(df)}")
+    print(f"    Unique restaurants: {df['restaurant'].nunique()}")
+    print(f"    Pivot shape: {pivot_all.shape}")
+    print(f"    Non-null counts per restaurant:\n{pivot_all.count()}")
+
+    corr_matrix = pivot_all.corr(method='pearson', min_periods=2)
+    print(f"\n    Correlation matrix:\n{corr_matrix.round(2)}")
 
     def calculate_pairs(pivot_df):
         if pivot_df.shape[1] < 2:
             return pd.DataFrame(columns=['restaurant_a', 'restaurant_b', 'correlation', 'strength'])
 
-        corr_matrix = pivot_df.corr(method='pearson', min_periods=3)
+        corr_matrix = pivot_df.corr(method='pearson', min_periods=2)
         pairs = []
 
         restaurants = corr_matrix.columns
@@ -151,7 +158,7 @@ def execute_pipeline():
         print(f"    -> Exported: data/processed/synchronized_pricing/sync_correlated_pairs_all.csv  ({len(sync_all_df)} pairs)")
         print(f"    -> Exported: data/processed/synchronized_pricing/sync_correlated_pairs_rain.csv ({len(sync_rain_df)} pairs)")
 
-        print("\n✅ Total Pipeline Run Successful! All 12 visualization matrices synchronized.")
+        print("\n✅ Total Pipeline Run Successful! All 15 visualization matrices synchronized.")
 
     except Exception as e:
         print(f"\n❌ Execution Exception: Pipeline processing interrupted: {e}")

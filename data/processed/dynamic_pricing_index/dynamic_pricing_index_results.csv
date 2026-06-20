@@ -1,9 +1,9 @@
 restaurant,category,rpi,wpi,temp_effect,pvs_normalized,dpi,dpi_rank,pricing_behavior
 Faasos,rolls,-38.2,6.09,5.48,100.0,59.74,1,Moderate Dynamic
-Wow! Momo,momos,-1.4,5.92,2.23,45.5,30.16,2,Low Dynamic
+Wow! Momo,momos,-1.4,6.43,2.6,46.56,31.44,2,Low Dynamic
 Biriyani Box,biryani,0.0,0.0,3.52,3.7,4.2,3,Static Pricer
 Kake Di Hatti,paneer,0.0,0.0,-5.73,6.35,3.18,4,Static Pricer
-Burger Singh,fried_chicken,0.0,-20.08,-20.08,5.82,2.91,5,Static Pricer
+Burger Singh,fried_chicken,0.0,-20.08,-20.08,6.35,3.18,4,Static Pricer
 Burnt,momos,0.0,0.0,0.0,0.0,0.0,6,Static Pricer
 Darjeeling Kitchen,momos,0.0,0.0,0.0,0.0,0.0,6,Static Pricer
 Kake Da Minar,paneer,0.0,0.0,0.0,0.0,0.0,6,Static Pricer
