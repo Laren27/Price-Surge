@@ -4,7 +4,7 @@
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
-**TL;DR:** Automated end-to-end data engineering pipeline monitoring Zomato price volatility across regional restaurants. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine executing non-parametric statistical testing (Mann-Whitney U and Kruskal-Wallis), a centered Z-score scaled Dynamic Pricing Index (DPI), and localized real-time Telegram alerts.
+**TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public REST API as new data is collected.
 
 ---
 
@@ -39,7 +39,7 @@
 
 - [The Question](#the-question)
 - [What I Built](#what-i-built)
-- [Key Findings](#key-findings)
+- [What This System Measures](#what-this-system-measures)
 - [What This Project Does Not Claim](#what-this-project-does-not-claim)
 - [Statistical Methodology](#statistical-methodology)
 - [Architecture](#architecture)
@@ -88,21 +88,21 @@ Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI 
 
 ---
 
+## What This System Measures
 
-## Key Findings
+Rather than asserting fixed conclusions that shift as more data is collected, this project is built to continuously answer a defined set of analytical questions. Each question is backed by a specific statistical test and exposed through a live endpoint, so the current answer is always one request away — not frozen in a README written weeks ago.
 
-Analytical observations computed dynamically directly from production database states:
+| Question | Method | Live Endpoint |
+|---|---|---|
+| Does rain measurably change menu prices? | Mann-Whitney U test, rain vs. no-rain conditions, computed per restaurant | [`/analysis/rain-premium`](https://price-surge.onrender.com/analysis/rain-premium) |
+| Does temperature correlate with pricing behavior? | Kruskal-Wallis test across Cool / Normal / Hot temperature bands | [`/analysis/hourly-patterns`](https://price-surge.onrender.com/analysis/hourly-patterns) |
+| Which restaurants practice dynamic pricing vs. remain static? | Price Volatility Score, ranked via the composite Dynamic Pricing Index | [`/analysis/restaurant-rankings`](https://price-surge.onrender.com/analysis/restaurant-rankings) |
+| Do any restaurants move prices in coordination with each other? | Pearson correlation across all restaurant pairs | [`/analysis/price-correlation`](https://price-surge.onrender.com/analysis/price-correlation) |
+| Are weekend prices systematically higher than weekday prices? | Weekend Price Index, computed per restaurant | [`/analysis/weekend-premium`](https://price-surge.onrender.com/analysis/weekend-premium) |
 
-| Dynamic Behavior | Pipeline Pattern & Statistical Significance |
-| ---------------- | ------------------------------------------- |
-| **Market Concentration** | Pricing volatility is highly concentrated within a localized cohort of active brands. The vast majority of monitored restaurants maintain completely static price floors. |
-| **Weather Dependency** | Highly isolated. Non-parametric testing (Mann-Whitney U and Kruskal-Wallis) confirms the null hypothesis ($p > 0.05$) across over 70% of the market—proving localized environmental shifts do not drive systemic, platform-wide menu premiums. |
-| **Structural Premiums** | Time-series trends capture distinct, brand-specific structural step-shifts on weekends rather than uniform, platform-wide surges. |
-| **Collusive Tracking** | In-memory Pearson cross-correlation arrays confirm independent pricing logic with zero evidence of coordinated or synchronized competitor tracking ($|r| \ge 0.4$, `min_periods=3`). |
+> Observation counts, p-values, and DPI scores update continuously as the scraper collects new data on its fixed schedule. The live API and Power BI dashboard are the source of truth — not any single number quoted in this document.
 
-> 📊 **Live System Metrics:** Real-time composite DPI scores, exact event volumes, and active leaderboards are live-computed directly from production tables. The current leaderboard ranking is available interactively via the [API Documentation](https://price-surge.onrender.com/docs).
-
-**The short answer:** Dynamic pricing on Zomato exists, but it is concentrated in a small cluster of brands and has nothing to do with weather. The popular belief that rain makes food more expensive is not supported by the data.
+**Directional read:** Across the monitored window, dynamic pricing behavior on Zomato is not uniform — a small subset of restaurants account for most observed price movement, while the majority remain static. Where weather effects are tested for, they tend to be modest relative to restaurant-specific pricing decisions. Exact figures move as the dataset grows; check the live leaderboard for the current state.
 
 ---
 
@@ -131,7 +131,7 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 | **Kruskal-Wallis** | Price distributions across three temperature bands (Cool / Normal / Hot) | Non-parametric comparison of three or more groups |
 | **Pearson correlation** | Synchronized pricing detection across restaurant pairs | Computed in-memory via pandas; threshold \|r\| ≥ 0.4, min_periods=3 |
 
-**Significance threshold:** p < 0.05. Zero of 19 restaurants cleared this bar for any weather variable — confirming the null hypothesis that weather does not drive pricing on this platform.
+**Significance threshold:** p < 0.05, applied independently per restaurant and per weather variable. Pass/fail results for every restaurant are computed live and available via `/analysis/rain-premium` and `/analysis/hourly-patterns` rather than stated as a fixed outcome here.
 
 ---
 
@@ -223,9 +223,9 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 
 **Atomic analytics refresh** — All analytics computations are orchestrated as a single atomic PL/pgSQL block in `refresh_analytics.sql`, executed via `run_all.py`. Writes to `analytics_*_staging` tables first, then drops live tables and renames staging in a single transaction. If any step fails, the entire refresh rolls back. No partial states, no stale analytics tables mid-refresh.
 
-**Z-score normalization over Min-Max** — Initial implementation used Min-Max normalization. One restaurant acting as a hyper-aggressive outlier pulled the ceiling upward, compressing the remaining 80% of competitors into a narrow band near zero and masking genuine pricing signals. Refactored to centered Z-score normalization (Z × 15 + 50) with hard clamps at [0, 100] to preserve relative spread across the market regardless of outlier behavior.
+**Z-score normalization over Min-Max** — Initial implementation used Min-Max normalization. One restaurant acting as a hyper-aggressive outlier pulled the ceiling upward, compressing the rest of the competitive set into a narrow band near zero and masking genuine pricing signals. Refactored to centered Z-score normalization (Z × 15 + 50) with hard clamps at [0, 100] to preserve relative spread across the market regardless of outlier behavior.
 
-**PVS as dominant DPI anchor (50% weight)** — In a market where 73.7% of restaurants are completely static, standard normalization maps their shared zero variance to an artificial score of ~38.2 rather than absolute zero. Elevating Price Volatility Score (actual frequency of price change events) to dominant weight converts weather-based indexes into secondary tiebreakers and eliminates this noise floor artifact.
+**PVS as dominant DPI anchor (50% weight)** — In a market where a large share of restaurants are completely static, standard normalization maps their shared zero variance to an artificial non-zero score rather than absolute zero. Elevating Price Volatility Score (actual frequency of price change events) to dominant weight converts weather-based indexes into secondary tiebreakers and eliminates this noise floor artifact.
 
 **Scheduler design — 5 iterations** — The scheduler went through five design versions before reaching production stability: relative timer → fixed clock slots → minimum gap guard → operating window with intraday startup rules → network retry wrapper. Each iteration solved a specific real-world failure mode (clock drift, double-scraping, mid-day startup gaps, transient network drops).
 
@@ -239,7 +239,7 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 
 **Playwright channel override** — Setting `channel='chrome'` silently ignored device emulation, reverting to desktop layout and breaking the mobile parser entirely. Fix: removed the channel flag and locked to Playwright's bundled Chromium binaries. Mobile device emulation and system Chrome channel flags are mutually exclusive.
 
-**Min-Max normalization failure** — Initial DPI scoring compressed 14 static restaurants into a narrow non-zero band due to a single outlier, making completely static brands appear to have low-but-present dynamic behavior. Rebuilt the normalization layer using centered Z-score with distribution scaling, which correctly separates active pricers from static ones.
+**Min-Max normalization failure** — Initial DPI scoring compressed a cluster of static restaurants into a narrow non-zero band due to a single outlier, making completely static brands appear to have low-but-present dynamic behavior. Rebuilt the normalization layer using centered Z-score with distribution scaling, which correctly separates active pricers from static ones.
 
 **Telegram SSL conflict** — PostgreSQL's Windows installer sets a `REQUESTS_CA_BUNDLE` environment variable that overrides the system certificate store, breaking `requests` SSL verification. Fix: `verify=False` + `urllib3.disable_warnings()` scoped to the Telegram alert module only.
 
@@ -269,14 +269,14 @@ Price-Surge/
 │   ├── analytics/
 │   │   ├── run_all.py                 # Analytics orchestrator — single psycopg2 session + Pearson
 │   │   ├── refresh_analytics.sql      # Active pipeline — atomic PL/pgSQL DO $$ block (15 tables)
-│   │   ├── dynamic_pricing_index.py   # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── rain_premium.py            # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── weekend_premium.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── stability_score.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── synchronized_pricing.py    # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── hourly_patterns.py         # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   ├── category_sensitivity.py    # DEPRECATED — reference only for standalone debugging, not part of active pipeline
-│   │   └── temperature_effect.py      # DEPRECATED — reference only for standalone debugging, not part of active pipeline
+│   │   ├── dynamic_pricing_index.py   # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── rain_premium.py            # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── weekend_premium.py         # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── stability_score.py         # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── synchronized_pricing.py    # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── hourly_patterns.py         # DEPRECATED — reference only, not part of active pipeline
+│   │   ├── category_sensitivity.py    # DEPRECATED — reference only, not part of active pipeline
+│   │   └── temperature_effect.py      # DEPRECATED — reference only, not part of active pipeline
 │   │
 │   ├── api/
 │   │   ├── main.py             # FastAPI app entry point
@@ -362,7 +362,7 @@ DPI = (PVS × 0.50) + (RPI × 0.20) + (WPI × 0.20) + (Temp × 0.10)
 | WPI — Weekend Price Index | 20% | Price uplift on weekends vs. weekdays |
 | Temp — Temperature Effect | 10% | Price correlation with temperature bands |
 
-**Why PVS carries the highest weight:** In a market where 73.7% of restaurants show zero price changes, standard normalization artifacts cluster all static players at a non-zero score (~38.2) rather than zero. Anchoring on raw change event frequency correctly separates active pricers from static ones, with weather indexes acting as tiebreakers for restaurants that do show movement.
+**Why PVS carries the highest weight:** In a market where a large share of restaurants show zero price changes, standard normalization artifacts cluster all static players at a non-zero score rather than zero. Anchoring on raw change event frequency correctly separates active pricers from static ones, with weather indexes acting as tiebreakers for restaurants that do show movement.
 
 **Normalization:** Each component is Z-score normalized (Z × 15 + 50) before weighting, then hard-clamped to [0, 100]. This prevents a single outlier from compressing the rest of the market into a narrow band — a failure mode observed with Min-Max normalization during development.
 
@@ -442,7 +442,8 @@ python src/analytics/run_all.py
 - **Restaurants monitored:** 19 restaurants across Bhubaneswar on Zomato
 - **Collection frequency:** 7 fixed slots daily — 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00
 - **Data per scrape:** All menu items with current prices per restaurant
-- **Observations defined:** Each scrape captures prices for ~100+ menu items across 19 restaurants. 72K+ rows in the `prices` table × item-level granularity = 1.4M+ individual price data points tracked over the collection period.
+- **Observations defined:** Each scrape captures prices for every menu item across all 19 restaurants — typically 100+ items per restaurant per scrape. Total observations accumulate as item-level rows × collection frequency, growing continuously with each scheduled run. Current total observation count is available live via the API rather than stated as a fixed figure here.
+- **Collection status:** Ongoing — the scraper runs on its fixed daily schedule indefinitely, so the dataset grows with every passing day. Numbers quoted in this README reflect methodology, not a frozen snapshot.
 - **Price change filter:** `price > ₹50`, `prev_price > ₹50`, `|diff| ≤ ₹50`, `|diff/prev| ≤ 30%`, gap ≤ 6 hours
 - **Weather data:** Temperature, humidity, and rain condition captured per scrape session via OpenWeatherMap
 - **Session linking:** Scraper and weather collector share a UUID (`scrape_session_id`) generated before each run, enabling exact price-weather joins without timestamp ambiguity
