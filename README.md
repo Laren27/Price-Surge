@@ -4,7 +4,11 @@
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
-**TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public REST API as new data is collected.
+<div align="center">
+  <img src="img/dashboard.gif" alt="Dashboard Preview" width="800"/>
+</div>
+
+**TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public FAST API as new data is collected.
 
 ---
 
@@ -251,10 +255,15 @@ Statistical tests were selected to match the data's non-normal distribution. No 
 
 ```
 Price-Surge/
+├── .env                        # Local environment variables (not committed)
+├── .gitignore                  # Excludes .env, zomato_cookies.json, __pycache__, etc.
+├── .gitattributes              # Git line-ending and file-handling rules
+│
+├── img/
+│   └── dashboard.png           # Power BI dashboard screenshot
 │
 ├── index.html                  # Project landing page (GitHub Pages)
 ├── requirements.txt            # Python dependencies
-├── .env                        # Local environment variables (not committed)
 │
 ├── scheduler/
 │   └── scheduler.py            # Main orchestrator — fixed clock slots, gap guard, retry wrapper
