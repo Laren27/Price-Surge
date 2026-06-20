@@ -1,12 +1,9 @@
 # Price Surge · Zomato Dynamic Pricing Intelligence
 
-**Role:** Solo developer & data engineer — built the scraper, analytics pipeline, REST API, and dashboard end-to-end.
+**Role:** Solo developer & data engineer — built the scraper, analytics pipeline, FAST API, and dashboard end-to-end.
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
-<div align="center">
-  <img src="img/dashboard.gif" alt="Dashboard Preview" width="800"/>
-</div>
 
 **TL;DR:** Automated end-to-end data engineering pipeline that continuously monitors Zomato price volatility across 19 restaurants in Bhubaneswar. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine running non-parametric statistical tests (Mann-Whitney U, Kruskal-Wallis), a centered Z-score normalized Dynamic Pricing Index (DPI), and real-time Telegram alerts. Every metric updates live through a public FAST API as new data is collected.
 
@@ -33,9 +30,10 @@
 
 ---
 
-<p align="center">
-  <img src="img/dashboard.png" alt="Power BI Pricing Intelligence Dashboard Hub" width="900">
-</p>
+
+<div align="center">
+  <img src="img/preview.gif" alt="Dashboard Preview" width="800"/>
+</div>
 
 ---
 
