@@ -4,7 +4,7 @@
 
 > *Do food delivery apps secretly change prices throughout the day? Does rain make your biryani more expensive? I built a system to find out.*
 
-**TL;DR:** Automated end-to-end pipeline monitoring Zomato prices across 19 restaurants — 1.4M+ price observations, Mann-Whitney U and Kruskal-Wallis tests confirming weather has zero effect on pricing (p > 0.05 across all 19 restaurants), dynamic pricing concentrated in just 5 of 19 restaurants, and zero evidence of coordinated pricing across the market.
+**TL;DR:** Automated end-to-end data engineering pipeline monitoring Zomato price volatility across regional restaurants. Features an event-driven Playwright scraper, an atomic PL/pgSQL database refresh engine executing non-parametric statistical testing (Mann-Whitney U and Kruskal-Wallis), a centered Z-score scaled Dynamic Pricing Index (DPI), and localized real-time Telegram alerts.
 
 ---
 
@@ -88,20 +88,19 @@ Playwright Scraper → PostgreSQL → Analytics Engine → FastAPI → Power BI 
 
 ---
 
+
 ## Key Findings
 
-After collecting **1.4M+ price observations** across 19 restaurants over several weeks:
+Analytical observations computed dynamically directly from production database states:
 
-| Finding | Result |
-|---------|--------|
-| Dynamic pricing concentration | **5 of 19** restaurants account for all price change events |
-| Market static rate | **73.7%** of restaurants show zero dynamic pricing |
-| Weather effect on prices | **None** — 0/19 restaurants show significant rain or temperature effect (p > 0.05) |
-| Weekend premium | **Restaurant-specific** — one restaurant shows 18.96% uplift; most show none |
-| Synchronized pricing pairs | **0** — no restaurants move prices in coordination |
-| Leading brand dominance | One brand accounts for the **majority of all price change events** |
+| Dynamic Behavior | Pipeline Pattern & Statistical Significance |
+| ---------------- | ------------------------------------------- |
+| **Market Concentration** | Pricing volatility is highly concentrated within a localized cohort of active brands. The vast majority of monitored restaurants maintain completely static price floors. |
+| **Weather Dependency** | Highly isolated. Non-parametric testing (Mann-Whitney U and Kruskal-Wallis) confirms the null hypothesis ($p > 0.05$) across over 70% of the market—proving localized environmental shifts do not drive systemic, platform-wide menu premiums. |
+| **Structural Premiums** | Time-series trends capture distinct, brand-specific structural step-shifts on weekends rather than uniform, platform-wide surges. |
+| **Collusive Tracking** | In-memory Pearson cross-correlation arrays confirm independent pricing logic with zero evidence of coordinated or synchronized competitor tracking ($|r| \ge 0.4$, `min_periods=3`). |
 
-> DPI scores and event counts are live-computed from the database. Current leaderboard available at [`/analysis/restaurant-rankings`](https://price-surge.onrender.com/analysis/restaurant-rankings).
+> 📊 **Live System Metrics:** Real-time composite DPI scores, exact event volumes, and active leaderboards are live-computed directly from production tables. The current leaderboard ranking is available interactively via the [API Documentation](https://price-surge.onrender.com/docs).
 
 **The short answer:** Dynamic pricing on Zomato exists, but it is concentrated in a small cluster of brands and has nothing to do with weather. The popular belief that rain makes food more expensive is not supported by the data.
 
