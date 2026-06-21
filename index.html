@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Price Surge · Zomato Dynamic Pricing Intelligence</title>
   <meta name="description" content="An end-to-end data pipeline tracking live restaurant price changes on Zomato — built with Playwright, PostgreSQL, FastAPI, and Power BI." />
+  <!-- Open Graph — controls link previews on LinkedIn, Slack, WhatsApp -->
+  <meta property="og:title" content="Price Surge · Zomato Dynamic Pricing Intelligence" />
+  <meta property="og:description" content="Built a full scraping-to-dashboard pipeline to find out whether Zomato restaurants in Bhubaneswar price dynamically — and discovered the practice is almost entirely confined to a single brand." />
+  <meta property="og:url" content="https://laren27.github.io/Price-Surge/" />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -268,6 +273,26 @@
     .insight strong { color: var(--text); font-weight: 500; }
 
     /* ============================================================
+       SKELETON LOADING
+       ============================================================ */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    .skeleton-num,
+    .skeleton-label,
+    .skeleton-text {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 4px;
+    }
+    .skeleton-num   { height: 36px; width: 70%; margin-bottom: 12px; }
+    .skeleton-label { height: 12px; width: 90%; }
+    .skeleton-insight { pointer-events: none; }
+    .skeleton-text  { height: 14px; width: 100%; }
+
+    /* ============================================================
        TECH STACK
        ============================================================ */
 
@@ -391,8 +416,9 @@
         Zomato Dynamic<br>Pricing <span>Intelligence</span>
       </h1>
       <p class="hero-sub">
-        An end-to-end data pipeline that tracks, stores, analyzes, and alerts on live
-        restaurant price changes across Bhubaneswar — automatically, every day.
+        Built a full scraping-to-dashboard pipeline to find out whether Zomato restaurants
+        in Bhubaneswar price dynamically — and discovered the practice is almost entirely
+        confined to a single brand.
       </p>
       <div class="hero-badges">
         <span class="badge">Playwright Scraper</span>
@@ -420,7 +446,7 @@
           <div class="pipe-icon">🎭</div>
           <div class="pipe-name">Scraper</div>
           <div class="pipe-desc">Playwright + iPhone 13 Pro emulation</div>
-          <div class="pipe-tag">LOCAL · headless=False</div>
+          <div class="pipe-tag">19 RESTAURANTS · 7 SLOTS/DAY</div>
         </div>
 
         <div class="pipe-arrow">→</div>
@@ -455,8 +481,8 @@
         <div class="pipe-node" data-idx="4" onclick="selectNode(4)">
           <div class="pipe-icon">📊</div>
           <div class="pipe-name">Power BI</div>
-          <div class="pipe-desc">7-page interactive dashboard with DAX measures</div>
-          <div class="pipe-tag">7 PAGES</div>
+          <div class="pipe-desc">8-page interactive dashboard with DAX measures</div>
+          <div class="pipe-tag">8 PAGES</div>
         </div>
 
         <div class="pipe-arrow">→</div>
@@ -464,7 +490,7 @@
         <div class="pipe-node" data-idx="5" onclick="selectNode(5)">
           <div class="pipe-icon">🔔</div>
           <div class="pipe-name">Telegram</div>
-          <div class="pipe-desc">5 automated price surge alerts via scheduler</div>
+          <div class="pipe-desc">5 operational alerts wired into the scheduler</div>
           <div class="pipe-tag">5 ALERT TYPES</div>
         </div>
 
@@ -475,64 +501,36 @@
     </section>
 
     <!-- ==========================================================
-         FINDINGS
-         EDIT: finding-card blocks (num + label) and insight items
+         FINDINGS — live data from FastAPI
          ========================================================== -->
     <section id="findings">
       <div class="section-eyebrow">Key Findings</div>
       <h2 class="section-title">What the data revealed</h2>
 
-      <div class="findings-grid">
-
-        <div class="finding-card">
-          <div class="finding-num">214</div>
-          <div class="finding-label">Valid price change events after quality filters</div>
-        </div>
-
-        <div class="finding-card">
-          <div class="finding-num">54.1</div>
-          <div class="finding-label">Faasos Dynamic Pricing Index — #1 most volatile</div>
-        </div>
-
-        <div class="finding-card">
-          <div class="finding-num">73.7%</div>
-          <div class="finding-label">Of market shows zero dynamic pricing activity</div>
-        </div>
-
-        <div class="finding-card">
-          <div class="finding-num">18.96%</div>
-          <div class="finding-label">Weekend price premium for Wow! Momo (#2 DPI)</div>
-        </div>
-
-        <div class="finding-card">
-          <div class="finding-num">0 / 19</div>
-          <div class="finding-label">Restaurants with significant weather price effect</div>
-        </div>
-
-        <div class="finding-card">
-          <div class="finding-num">72K+</div>
-          <div class="finding-label">Total observations across 19 restaurants</div>
-        </div>
-
+      <!-- Stat cards — populated by JS -->
+      <div class="findings-grid" id="findingsGrid">
+        <!-- skeleton placeholders shown while loading -->
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
+        <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
       </div>
 
-      <div class="insight-list">
+      <!-- Insight bullets — populated by JS -->
+      <div class="insight-list" id="insightList">
+        <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
+        <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
+        <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
+      </div>
 
-        <div class="insight">
-          <div class="insight-dot"></div>
-          <span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — Faasos alone accounts for the majority of all price change events (167 of 214), suggesting the practice is brand-level policy, not a platform-wide norm.</span>
-        </div>
-
-        <div class="insight">
-          <div class="insight-dot"></div>
-          <span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span>
-        </div>
-
-        <div class="insight">
-          <div class="insight-dot"></div>
-          <span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — Wow! Momo shows an 18.96% weekend uplift while most competitors remain fully static.</span>
-        </div>
-
+      <!-- status line: visible while loading, hidden on success, swapped on error -->
+      <div id="findingsStatus" style="margin-top:14px; font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono',monospace;">
+        &#x27F3; fetching live data — may take up to 55s on first load (Render free tier cold start)&hellip;
+      </div>
+      <div id="findingsError" style="display:none; margin-top:8px; font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono',monospace;">
+        &#x26A0; API unreachable &mdash; showing last known values. Try refreshing in ~30s.
       </div>
     </section>
 
@@ -618,8 +616,7 @@
          EDIT: href values on the three buttons below
          ========================================================== -->
     <section id="links">
-      <div class="section-eyebrow">Explore the project</div>
-      <h2 class="section-title" style="margin-bottom:28px;">See it in action</h2>
+      <h2 class="section-title" style="margin-bottom:28px;">Explore the project</h2>
       <div class="links-row">
 
         <!-- EDIT: replace with your actual GitHub repo URL -->
@@ -676,10 +673,10 @@
       `<strong>FastAPI Backend</strong> — 10 REST endpoints at <code>src/api/</code> serving pre-computed analytics data. Uses <code>RealDictCursor</code> for native Postgres-to-JSON serialization. <code>Optional[type]=None</code> handles nullable columns cleanly in Pydantic models. Run locally via <code>uvicorn src.api.main:app --reload</code> from the project root. Auto-generates Swagger UI at <code>/docs</code>.`,
 
       /* 4 — Power BI */
-      `<strong>Power BI Dashboard</strong> — 7-page interactive dashboard: Executive Summary, Dynamic Pricing Index leaderboard, Weather Intel, Stability & Volatility, Time Intel, Category Intel, and a hidden Drillthrough deep-dive page. Design system: dark navy canvas, Zomato Red primary, Syne + DM Sans fonts. All statistical scores pre-calculated upstream; DAX handles display logic, formatting, and conditional colors only.`,
+      `<strong>Power BI Dashboard</strong> — 8-page interactive dashboard: Executive Summary, Dynamic Pricing Index leaderboard, Weather Intel, Stability & Volatility, Time Intel, Category Intel, a hidden Drillthrough deep-dive page, and a hidden Restaurant Dive page for per-restaurant deep analysis. Design system: dark navy canvas, Zomato Red primary, Syne + DM Sans fonts. All statistical scores pre-calculated upstream; DAX handles display logic, formatting, and conditional colors only.`,
 
       /* 5 — Telegram */
-      `<strong>Telegram Alert System</strong> — 5 automated alert types (A–E) wired into the scheduler: price surge detection, volatility spikes, weekend premium triggers, DPI leader changes, and daily market summary. Key fix: PostgreSQL installer sets <code>REQUESTS_CA_BUNDLE</code> env var breaking SSL — resolved with <code>verify=False</code> + <code>urllib3.disable_warnings()</code>. <code>TELEGRAM_CHAT_ID</code> cast as <code>int()</code>.`
+      `<strong>Telegram Alert System</strong> — 5 operational alert types (A–E) wired into the scheduler: ✅ scrape success, ❌ scrape failure, ⚠️ no internet detected, 🔄 scrape started, ⏳ waiting for next window. Delivered instantly via the Telegram Bot API. Key fix: PostgreSQL installer sets <code>REQUESTS_CA_BUNDLE</code> env var globally, breaking <code>requests</code> SSL — resolved with <code>verify=False</code> + <code>urllib3.disable_warnings()</code>. <code>TELEGRAM_CHAT_ID</code> must be cast as <code>int()</code>.`
     ];
 
     function selectNode(idx) {
@@ -696,6 +693,127 @@
 
     /* Show first node detail on load */
     selectNode(0);
+  </script>
+
+  <!-- ============================================================
+       LIVE FINDINGS — fetches from FastAPI on Render
+       Falls back gracefully if API is cold-starting or unreachable.
+       ============================================================ -->
+  <script>
+    const API = 'https://price-surge.onrender.com';
+
+    async function loadFindings() {
+      try {
+        // Fetch summary stats and DPI leaderboard in parallel
+        const [summaryRes, dpiRes, weekendRes] = await Promise.all([
+          fetch(`${API}/analysis/summary`,         { signal: AbortSignal.timeout(55000) }),
+          fetch(`${API}/analysis/dpi-scores`,      { signal: AbortSignal.timeout(55000) }),
+          fetch(`${API}/analysis/weekend-premium`, { signal: AbortSignal.timeout(55000) }),
+        ]);
+
+        if (!summaryRes.ok || !dpiRes.ok) throw new Error('API error');
+
+        const summary = await summaryRes.json();
+        const dpi     = await dpiRes.json();
+        const weekend = weekendRes.ok ? await weekendRes.json() : null;
+
+        // ── Derive stat card values ──────────────────────────────
+        const totalEvents   = summary.total_price_change_events ?? summary.price_change_events ?? '214';
+        const totalRows     = summary.total_rows ?? summary.total_observations ?? '72K+';
+        const staticPct     = summary.static_restaurant_pct != null
+                                ? (summary.static_restaurant_pct * 100).toFixed(1) + '%'
+                                : '73.7%';
+        const weatherEffect = summary.restaurants_with_significant_weather_effect != null
+                                ? `${summary.restaurants_with_significant_weather_effect} / 19`
+                                : '0 / 19';
+
+        // Top DPI restaurant
+        const sorted   = [...dpi].sort((a, b) => b.dpi_score - a.dpi_score);
+        const topRest  = sorted[0];
+        const topDPI   = topRest ? topRest.dpi_score.toFixed(1) : '54.1';
+        const topName  = topRest ? topRest.restaurant : 'Faasos';
+
+        // Weekend premium for #2 DPI restaurant
+        let weekendPremium = '18.96%';
+        if (weekend && sorted[1]) {
+          const second = weekend.find(w => w.restaurant === sorted[1].restaurant);
+          if (second?.weekend_premium_pct != null) {
+            weekendPremium = second.weekend_premium_pct.toFixed(2) + '%';
+          }
+        }
+        const secondName = sorted[1]?.restaurant ?? 'Wow! Momo';
+
+        // ── Render stat cards ────────────────────────────────────
+        document.getElementById('findingsGrid').innerHTML = `
+          <div class="finding-card">
+            <div class="finding-num">${totalEvents}</div>
+            <div class="finding-label">Valid price change events after quality filters</div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">${topDPI}</div>
+            <div class="finding-label">${topName} Dynamic Pricing Index — #1 most volatile</div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">${staticPct}</div>
+            <div class="finding-label">Of market shows zero dynamic pricing activity</div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">${weekendPremium}</div>
+            <div class="finding-label">Weekend price premium for ${secondName} (#2 DPI)</div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">${weatherEffect}</div>
+            <div class="finding-label">Restaurants with significant weather price effect</div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">${typeof totalRows === 'number' ? totalRows.toLocaleString() + '+' : totalRows}</div>
+            <div class="finding-label">Total observations across 19 restaurants</div>
+          </div>
+        `;
+
+        // Hide the loading status line — data is live
+        document.getElementById('findingsStatus').style.display = 'none';
+
+        // ── Render insight bullets (use live names) ──────────────
+        const topEventsCount = topRest?.price_change_events ?? 167;
+        document.getElementById('insightList').innerHTML = `
+          <div class="insight">
+            <div class="insight-dot"></div>
+            <span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — ${topName} alone accounts for the majority of all price change events (${topEventsCount} of ${totalEvents}), suggesting the practice is brand-level policy, not a platform-wide norm.</span>
+          </div>
+          <div class="insight">
+            <div class="insight-dot"></div>
+            <span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span>
+          </div>
+          <div class="insight">
+            <div class="insight-dot"></div>
+            <span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — ${secondName} shows a ${weekendPremium} weekend uplift while most competitors remain fully static.</span>
+          </div>
+        `;
+
+      } catch (err) {
+        // API cold-starting or unreachable — fall back to hardcoded values silently
+        console.warn('Findings API unavailable, falling back to static data.', err);
+
+        document.getElementById('findingsGrid').innerHTML = `
+          <div class="finding-card"><div class="finding-num">214</div><div class="finding-label">Valid price change events after quality filters</div></div>
+          <div class="finding-card"><div class="finding-num">54.1</div><div class="finding-label">Faasos Dynamic Pricing Index — #1 most volatile</div></div>
+          <div class="finding-card"><div class="finding-num">73.7%</div><div class="finding-label">Of market shows zero dynamic pricing activity</div></div>
+          <div class="finding-card"><div class="finding-num">18.96%</div><div class="finding-label">Weekend price premium for Wow! Momo (#2 DPI)</div></div>
+          <div class="finding-card"><div class="finding-num">0 / 19</div><div class="finding-label">Restaurants with significant weather price effect</div></div>
+          <div class="finding-card"><div class="finding-num">72K+</div><div class="finding-label">Total observations across 19 restaurants</div></div>
+        `;
+        document.getElementById('insightList').innerHTML = `
+          <div class="insight"><div class="insight-dot"></div><span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — Faasos alone accounts for the majority of all price change events (167 of 214), suggesting the practice is brand-level policy, not a platform-wide norm.</span></div>
+          <div class="insight"><div class="insight-dot"></div><span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span></div>
+          <div class="insight"><div class="insight-dot"></div><span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — Wow! Momo shows an 18.96% weekend uplift while most competitors remain fully static.</span></div>
+        `;
+        document.getElementById('findingsStatus').style.display = 'none';
+        document.getElementById('findingsError').style.display = 'block';
+      }
+    }
+
+    loadFindings();
   </script>
 
 </body>
