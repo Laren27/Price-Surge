@@ -13,7 +13,7 @@ from src.api.routers import restaurants, analysis
 # ─────────────────────────────────────────────
 tags_metadata = [
     {
-        "name": "restaurants",
+        "name": "Restaurants",
         "description": (
             "Retrieve raw restaurant listings, price observations, and item-level data. "
             "All prices are scraped live from Zomato across 19 restaurants in Bhubaneswar "
@@ -21,7 +21,7 @@ tags_metadata = [
         ),
     },
     {
-        "name": "analysis",
+        "name": "Analysis",
         "description": (
             "Statistical analytics computed from the scraped dataset. Includes the Dynamic "
             "Pricing Index (DPI), weather correlation results, weekend premium scores, "
@@ -88,8 +88,8 @@ app.add_middleware(
 # ─────────────────────────────────────────────
 #  ROUTERS
 # ─────────────────────────────────────────────
-app.include_router(restaurants.router, prefix="/restaurants", tags=["restaurants"])
-app.include_router(analysis.router,    prefix="/analysis",    tags=["analysis"])
+app.include_router(restaurants.router, prefix="/restaurants", tags=["Restaurants"])
+app.include_router(analysis.router,    prefix="/analysis",    tags=["Analysis"])
 
 
 # ─────────────────────────────────────────────
