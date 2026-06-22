@@ -1,5 +1,3 @@
-# src/api/routers/analysis.py
-
 from fastapi import APIRouter
 from src.api.database import query
 from src.api.models import (
@@ -11,7 +9,8 @@ from src.api.models import (
     WeatherCorrelationResponse, WeatherCorrelationEntry,
 )
 
-router = APIRouter(prefix="/analysis", tags=["Analysis"])
+# Cleaned: Removed tags=["Analysis"] from APIRouter initialization
+router = APIRouter(prefix="/analysis")
 
 
 @router.get("/restaurant-rankings", response_model=DPIResponse)

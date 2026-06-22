@@ -1,9 +1,8 @@
-# src/api/routers/restaurants.py
-
 from fastapi import APIRouter, Query
 from src.api.database import query
 
-router = APIRouter(tags=["Restaurants"])
+# Cleaned: Removed tags=["Restaurants"] completely
+router = APIRouter()
 
 
 @router.get("/restaurants")
