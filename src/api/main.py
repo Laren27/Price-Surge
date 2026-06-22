@@ -148,9 +148,9 @@ body, .swagger-ui {
 .swagger-ui .info .title {
   color: var(--text) !important;
   font-family: 'Syne', sans-serif !important;
-  font-size: 28px !important;
+  font-size: 36px !important;
   font-weight: 700 !important;
-  letter-spacing: -0.5px !important;
+  letter-spacing: -0.8px !important;
 }
 .swagger-ui .info .title small {
   background: var(--red) !important;
@@ -183,11 +183,12 @@ body, .swagger-ui {
 .swagger-ui .info h2, .swagger-ui .info h3 {
   color: var(--text) !important;
   font-family: 'Syne', sans-serif !important;
-  font-size: 15px !important;
+  font-size: 18px !important;
   font-weight: 600 !important;
-  margin-top: 20px !important;
+  margin-top: 24px !important;
   border-bottom: 1px solid var(--border) !important;
-  padding-bottom: 6px !important;
+  padding-bottom: 8px !important;
+  letter-spacing: -0.3px !important;
 }
 .swagger-ui .info strong { color: var(--text) !important; }
 
@@ -195,22 +196,28 @@ body, .swagger-ui {
 .swagger-ui .opblock-tag {
   background: var(--surface2) !important;
   border: 1px solid var(--border) !important;
+  border-left: 3px solid var(--amber) !important;
   border-radius: 8px !important;
   margin-bottom: 8px !important;
-  color: var(--text) !important;
+  color: var(--amber) !important;
   font-family: 'Syne', sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  padding: 12px 20px !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 14px 20px !important;
+  letter-spacing: 0.2px !important;
 }
 .swagger-ui .opblock-tag:hover {
-  background: rgba(45,125,210,0.10) !important;
+  background: rgba(245,166,35,0.06) !important;
 }
-.swagger-ui .opblock-tag-section p {
+/* tag description — shown below the tag name, kept subtle */
+.swagger-ui .opblock-tag-section p,
+.swagger-ui .opblock-tag small {
   color: var(--text-muted) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
+  font-family: 'DM Sans', sans-serif !important;
   padding: 0 20px 12px !important;
   margin: 0 !important;
+  display: block !important;
 }
 
 /* ── ENDPOINT BLOCKS ── */
@@ -260,13 +267,21 @@ body, .swagger-ui {
 
 /* ── ENDPOINT PATH & DESCRIPTION ── */
 .swagger-ui .opblock-summary-path {
-  color: var(--text) !important;
+  color: var(--teal) !important;
   font-family: var(--mono) !important;
   font-size: 13px !important;
 }
+.swagger-ui .opblock-summary-path span {
+  color: var(--teal) !important;
+}
+/* Dash separator before description */
 .swagger-ui .opblock-summary-description {
   color: var(--text-muted) !important;
   font-size: 13px !important;
+}
+.swagger-ui .opblock-summary-description::before {
+  content: '— ';
+  color: rgba(232,237,242,0.25) !important;
 }
 .swagger-ui .opblock-description-wrapper p {
   color: var(--text-muted) !important;
