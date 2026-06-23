@@ -1,0 +1,28 @@
+{
+  "recent_logs": [
+    {
+      "status": "success",
+      "session_id": "20260623_1432",
+      "time": "2026-06-23 14:57:49",
+      "duration_minutes": 25
+    },
+    {
+      "status": "success",
+      "session_id": "20260623_1600",
+      "time": "2026-06-23 16:26:57",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260623_1800",
+      "time": "2026-06-23 18:27:32",
+      "duration_minutes": 26
+    }
+  ],
+  "last_status": "success",
+  "last_session_id": "20260623_1800",
+  "last_scrape_time": "2026-06-23 18:27:32",
+  "last_duration_minutes": 26,
+  "restaurants_scraped": 19,
+  "last_error_type": null
+}
