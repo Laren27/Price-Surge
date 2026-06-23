@@ -16,6 +16,7 @@ import json
 import os
 import importlib.util
 import traceback
+import threading
 from datetime import datetime
 from pathlib import Path
 from src.alerts.telegram import (
@@ -25,6 +26,7 @@ from src.alerts.telegram import (
     alert_scrape_started,
     alert_waiting_for_window
 )
+from src.alerts.listener import start_listener
 
 # ─────────────────────────────────────────────
 # PATHS
@@ -168,19 +170,17 @@ def scrape_job():
         "No more slots today"
     )
 
-    alert_scrape_started(          # ← Alert D: cycle beginning
+    alert_scrape_started(
         session_id=scrape_session_id,
         next_slot=next_slot
     )
 
     # Step 0: Internet check
-    # Uses the scheduler's own retry-based check (10 attempts, 60s apart).
-    # If still down after 10 minutes → Alert C fires and we skip the run.
     if not check_internet():
         log("[WARN] No internet connection — skipping this run to avoid partial scrape")
         log("Will try again at the next scheduled slot.")
         log("=" * 50)
-        alert_no_internet()   # ← Alert C: network offline
+        alert_no_internet()
         return
 
     # Step 1: Check cookies file exists
@@ -212,9 +212,6 @@ def scrape_job():
         log("[WARN] Weather fetch failed — skipping weather for this run")
 
     # Step 4: Run the scraper subprocess
-    # Success  → Alert A fires with duration and restaurant count
-    # Timeout  → Alert B fires with TimeoutExpired
-    # Any crash → Alert B fires with full traceback
     log("Starting scraper...")
     try:
         start_time = datetime.now()
@@ -244,28 +241,32 @@ def scrape_job():
 
         if result.returncode == 0:
             log(f"[OK] Scrape completed in {duration} minutes")
-            alert_scrape_success(          # ← Alert A: clean completion
+            alert_scrape_success(
                 duration_minutes=duration,
-                restaurants_scraped=19
+                restaurants_scraped=19,
+                session_id=scrape_session_id
             )
         else:
             log(f"[FAIL] Scraper exited with error code {result.returncode}")
-            alert_scrape_failure(          # ← Alert B: non-zero exit code
+            alert_scrape_failure(
                 error_type="SubprocessError",
-                traceback_snippet=f"Scraper exited with code {result.returncode}.\n{result.stderr[:300]}"
+                traceback_snippet=f"Scraper exited with code {result.returncode}.\n{result.stderr[:300]}",
+                session_id=scrape_session_id
             )
 
     except subprocess.TimeoutExpired:
         log("[FAIL] Scraper timed out after 1 hour — killed")
-        alert_scrape_failure(              # ← Alert B: timeout
+        alert_scrape_failure(
             error_type="TimeoutExpired",
-            traceback_snippet="Scraper subprocess timed out after 3600 seconds."
+            traceback_snippet="Scraper subprocess timed out after 3600 seconds.",
+            session_id=scrape_session_id
         )
     except Exception as e:
         log(f"[FAIL] Failed to run scraper: {e}")
-        alert_scrape_failure(              # ← Alert B: unexpected crash
+        alert_scrape_failure(
             error_type=type(e).__name__,
-            traceback_snippet=traceback.format_exc()
+            traceback_snippet=traceback.format_exc(),
+            session_id=scrape_session_id
         )
 
     log("=" * 50)
@@ -300,6 +301,11 @@ def scrape_job_guarded():
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
     log("Scheduler started")
+
+    listener_thread = threading.Thread(target=start_listener, daemon=True, name="TelegramListener")
+    listener_thread.start()
+    log("Telegram command listener started (daemon thread)")
+
     log(f"   Scraper  : {SCRAPER}")
     log(f"   Cookies  : {COOKIES_FILE}")
     log(f"   Log      : {LOG_FILE}")
