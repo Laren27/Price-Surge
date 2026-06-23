@@ -243,3 +243,5 @@ def start_listener():
             print(f"[LISTENER] Poll error: {e}")
 
         time.sleep(3)
+if __name__ == "__main__":
+    start_listener()
