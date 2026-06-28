@@ -3,7 +3,6 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-
 from src.api.routers import restaurants, analysis
 
 # ─────────────────────────────────────────────
@@ -80,7 +79,7 @@ Built by [Laren Sahu](https://laren27.github.io/Price-Surge/) · Source on [GitH
 # ─────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://laren27.github.io"],  # or ["*"] to allow all
     allow_methods=["GET"],
     allow_headers=["*"],
 )
