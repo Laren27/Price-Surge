@@ -10,7 +10,7 @@ from src.api.models import (
 )
 
 # Cleaned: Removed tags=["Analysis"] from APIRouter initialization
-router = APIRouter(prefix="/analysis")
+router = APIRouter()
 
 
 @router.get("/restaurant-rankings", response_model=DPIResponse)
