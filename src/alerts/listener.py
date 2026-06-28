@@ -22,7 +22,7 @@ load_dotenv()
 BOT_TOKEN  = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID    = int(os.getenv("TELEGRAM_CHAT_ID"))
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 STATE_FILE   = PROJECT_ROOT / "data" / "state.json"
 
 SCRAPE_TIMES = ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
@@ -199,7 +199,6 @@ def handle_update(update: dict):
     message = update.get("message", {})
     chat_id = message.get("chat", {}).get("id")
     text    = message.get("text", "").strip().split("@")[0]  # strip bot username if present
-
     if chat_id != CHAT_ID:
         return  # ignore messages from other chats
 
