@@ -15,25 +15,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ============================================================
-       DESIGN TOKENS — edit these to retheme the entire page
-       ============================================================ */
     :root {
-      --bg:          #06101F;   /* canvas background */
-      --surface:     #0E1E33;   /* card / node background */
-      --surface-deep:#0A1628;   /* deeper surface (insights) */
-      --red:         #E23744;   /* Zomato Red — primary accent */
-      --blue:        #2D7DD2;   /* Deep Blue — secondary accent */
-      --text:        #E8EDF2;   /* primary text */
-      --text-muted:  rgba(232,237,242,0.55);  /* secondary text */
-      --text-faint:  rgba(232,237,242,0.35);  /* hints / eyebrows */
-      --border:      rgba(255,255,255,0.08);  /* default border */
-      --border-hover:rgba(226,55,68,0.4);     /* red hover border */
+      --bg:          #06101F;
+      --surface:     #0E1E33;
+      --surface-deep:#0A1628;
+      --red:         #E23744;
+      --blue:        #2D7DD2;
+      --text:        #E8EDF2;
+      --text-muted:  rgba(232,237,242,0.55);
+      --text-faint:  rgba(232,237,242,0.35);
+      --border:      rgba(255,255,255,0.08);
+      --border-hover:rgba(226,55,68,0.4);
     }
 
-    /* ============================================================
-       RESET & BASE
-       ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -46,18 +40,12 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* ============================================================
-       LAYOUT
-       ============================================================ */
     .container {
       max-width: 980px;
       margin: 0 auto;
       padding: 0 32px;
     }
 
-    /* ============================================================
-       NAVIGATION
-       ============================================================ */
     nav {
       padding: 20px 0;
       border-bottom: 0.5px solid var(--border);
@@ -73,8 +61,6 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    /* EDIT: Change project name in nav */
     .nav-logo {
       font-family: 'Syne', sans-serif;
       font-size: 14px;
@@ -91,12 +77,7 @@
     }
     .nav-links a:hover { color: var(--text); }
 
-    /* ============================================================
-       HERO
-       ============================================================ */
     .hero { padding: 96px 0 80px; }
-
-    /* EDIT: hero-label — the small tag above the title */
     .hero-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
@@ -105,8 +86,6 @@
       text-transform: uppercase;
       margin-bottom: 24px;
     }
-
-    /* EDIT: hero-title — main headline. Use <span> for red highlight */
     .hero-title {
       font-family: 'Syne', sans-serif;
       font-size: clamp(36px, 5.5vw, 58px);
@@ -116,8 +95,6 @@
       margin-bottom: 24px;
     }
     .hero-title span { color: var(--red); }
-
-    /* EDIT: hero-sub — one or two sentence description */
     .hero-sub {
       font-size: 16px;
       color: var(--text-muted);
@@ -125,8 +102,6 @@
       line-height: 1.75;
       margin-bottom: 40px;
     }
-
-    /* EDIT: .badge items — tech stack badges in hero */
     .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; }
     .badge {
       font-family: 'JetBrains Mono', monospace;
@@ -138,9 +113,6 @@
       letter-spacing: 0.04em;
     }
 
-    /* ============================================================
-       SHARED SECTION STYLES
-       ============================================================ */
     section { padding: 80px 0; }
     section + section { border-top: 0.5px solid var(--border); }
 
@@ -159,9 +131,6 @@
       margin-bottom: 48px;
     }
 
-    /* ============================================================
-       PIPELINE / ARCHITECTURE
-       ============================================================ */
     .pipeline {
       display: flex;
       align-items: flex-start;
@@ -169,10 +138,6 @@
       overflow-x: auto;
       padding-bottom: 12px;
     }
-
-    /* EDIT: .pipe-node — each step in the pipeline.
-       Add data-idx sequentially (0,1,2...) and onclick="selectNode(N)".
-       .local = dashed border = runs on local machine */
     .pipe-node {
       flex: 0 0 auto;
       background: var(--surface);
@@ -195,7 +160,6 @@
 
     .pipe-arrow { color: rgba(255,255,255,0.18); font-size: 16px; padding: 0 6px; flex-shrink: 0; margin-top: 40px; }
 
-    /* EDIT: pipe-detail content is controlled in JS — see PIPELINE_DETAILS array below */
     .pipe-detail {
       margin-top: 24px;
       background: var(--surface);
@@ -219,11 +183,6 @@
       color: var(--blue);
     }
 
-    /* ============================================================
-       FINDINGS
-       ============================================================ */
-
-    /* EDIT: finding-card — add/remove cards for your numbers */
     .findings-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -250,7 +209,6 @@
       line-height: 1.55;
     }
 
-    /* EDIT: insight items — plain language findings */
     .insight-list { display: flex; flex-direction: column; gap: 12px; }
     .insight {
       display: flex;
@@ -272,9 +230,6 @@
     }
     .insight strong { color: var(--text); font-weight: 500; }
 
-    /* ============================================================
-       SKELETON LOADING
-       ============================================================ */
     @keyframes shimmer {
       0%   { background-position: -400px 0; }
       100% { background-position:  400px 0; }
@@ -292,11 +247,6 @@
     .skeleton-insight { pointer-events: none; }
     .skeleton-text  { height: 14px; width: 100%; }
 
-    /* ============================================================
-       TECH STACK
-       ============================================================ */
-
-    /* EDIT: tech-item — add/remove technologies */
     .tech-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -315,11 +265,6 @@
     .tech-name { font-size: 13px; font-weight: 500; }
     .tech-role { font-size: 11px; color: rgba(232,237,242,0.4); margin-top: 2px; }
 
-    /* ============================================================
-       CTA / LINKS
-       ============================================================ */
-
-    /* EDIT: href values in .cta-btn links below in the HTML */
     .links-row { display: flex; flex-wrap: wrap; gap: 14px; }
     .cta-btn {
       display: inline-flex;
@@ -343,7 +288,6 @@
     }
     .cta-secondary:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
 
-    /* live dot animation on API button */
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.25; }
@@ -356,9 +300,6 @@
       animation: pulse-dot 2s ease-in-out infinite;
     }
 
-    /* ============================================================
-       FOOTER
-       ============================================================ */
     footer {
       border-top: 0.5px solid var(--border);
       padding: 28px 0;
@@ -374,9 +315,6 @@
     }
     footer span { font-family: 'JetBrains Mono', monospace; }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
     @media (max-width: 640px) {
       .container { padding: 0 20px; }
       .hero { padding: 64px 0 56px; }
@@ -388,10 +326,6 @@
 
 <body>
 
-  <!-- ============================================================
-       NAVIGATION
-       EDIT: nav-logo text, nav-links anchors
-       ============================================================ -->
   <nav>
     <div class="container nav-inner">
       <span class="nav-logo">PRICE SURGE</span>
@@ -406,10 +340,6 @@
 
   <div class="container">
 
-    <!-- ==========================================================
-         HERO
-         EDIT: hero-label, hero-title, hero-sub, badge list
-         ========================================================== -->
     <section class="hero" id="hero">
       <div class="hero-label">Data Engineering · Analytics · Real-time Systems</div>
       <h1 class="hero-title">
@@ -431,11 +361,6 @@
       </div>
     </section>
 
-    <!-- ==========================================================
-         PIPELINE / ARCHITECTURE
-         EDIT: pipe-node blocks here + PIPELINE_DETAILS array in JS
-         .local class = dashed border (runs on local machine)
-         ========================================================== -->
     <section id="pipeline">
       <div class="section-eyebrow">System Architecture</div>
       <h2 class="section-title">How the pipeline works</h2>
@@ -496,20 +421,14 @@
 
       </div>
 
-      <!-- Detail panel — content set by JS below -->
       <div class="pipe-detail" id="pipeDetail"></div>
     </section>
 
-    <!-- ==========================================================
-         FINDINGS — live data from FastAPI
-         ========================================================== -->
     <section id="findings">
       <div class="section-eyebrow">Key Findings</div>
       <h2 class="section-title">What the data revealed</h2>
 
-      <!-- Stat cards — populated by JS -->
       <div class="findings-grid" id="findingsGrid">
-        <!-- skeleton placeholders shown while loading -->
         <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
         <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
         <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
@@ -518,14 +437,12 @@
         <div class="finding-card skeleton-card"><div class="skeleton-num"></div><div class="skeleton-label"></div></div>
       </div>
 
-      <!-- Insight bullets — populated by JS -->
       <div class="insight-list" id="insightList">
         <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
         <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
         <div class="insight skeleton-insight"><div class="insight-dot"></div><div class="skeleton-text"></div></div>
       </div>
 
-      <!-- status line: visible while loading, hidden on success, swapped on error -->
       <div id="findingsStatus" style="margin-top:14px; font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono',monospace;">
         &#x27F3; fetching live data — may take up to 55s on first load (Render free tier cold start)&hellip;
       </div>
@@ -534,115 +451,63 @@
       </div>
     </section>
 
-    <!-- ==========================================================
-         TECH STACK
-         EDIT: tech-item blocks (dot color, name, role)
-         ========================================================== -->
     <section id="tech">
       <div class="section-eyebrow">Technology</div>
       <h2 class="section-title">Built with</h2>
 
       <div class="tech-grid">
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#3776AB"></div>
-          <div>
-            <div class="tech-name">Python</div>
-            <div class="tech-role">Core pipeline language</div>
-          </div>
+          <div><div class="tech-name">Python</div><div class="tech-role">Core pipeline language</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#2D8CFF"></div>
-          <div>
-            <div class="tech-name">Playwright</div>
-            <div class="tech-role">Browser automation</div>
-          </div>
+          <div><div class="tech-name">Playwright</div><div class="tech-role">Browser automation</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#336791"></div>
-          <div>
-            <div class="tech-name">PostgreSQL</div>
-            <div class="tech-role">Primary database</div>
-          </div>
+          <div><div class="tech-name">PostgreSQL</div><div class="tech-role">Primary database</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#009688"></div>
-          <div>
-            <div class="tech-name">FastAPI</div>
-            <div class="tech-role">REST API layer</div>
-          </div>
+          <div><div class="tech-name">FastAPI</div><div class="tech-role">REST API layer</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#F2C811"></div>
-          <div>
-            <div class="tech-name">Power BI</div>
-            <div class="tech-role">Dashboard & DAX</div>
-          </div>
+          <div><div class="tech-name">Power BI</div><div class="tech-role">Dashboard & DAX</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#E23744"></div>
-          <div>
-            <div class="tech-name">Telegram API</div>
-            <div class="tech-role">Alert delivery</div>
-          </div>
+          <div><div class="tech-name">Telegram API</div><div class="tech-role">Alert delivery</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#FF6B35"></div>
-          <div>
-            <div class="tech-name">OpenWeatherMap</div>
-            <div class="tech-role">Weather context</div>
-          </div>
+          <div><div class="tech-name">OpenWeatherMap</div><div class="tech-role">Weather context</div></div>
         </div>
-
         <div class="tech-item">
           <div class="tech-dot" style="background:#5C6BC0"></div>
-          <div>
-            <div class="tech-name">SciPy · Stats</div>
-            <div class="tech-role">Hypothesis testing</div>
-          </div>
+          <div><div class="tech-name">SciPy · Stats</div><div class="tech-role">Hypothesis testing</div></div>
         </div>
-
       </div>
     </section>
 
-    <!-- ==========================================================
-         LINKS / CTA
-         EDIT: href values on the three buttons below
-         ========================================================== -->
     <section id="links">
       <h2 class="section-title" style="margin-bottom:28px;">Explore the project</h2>
       <div class="links-row">
-
-        <!-- EDIT: replace with your actual GitHub repo URL -->
         <a class="cta-btn cta-primary" href="https://github.com/Laren27/Price-Surge" target="_blank" rel="noopener">
           ⬡ View on GitHub
         </a>
-
-        <!-- EDIT: replace with your Render / Railway API URL once deployed -->
         <a class="cta-btn cta-secondary" href="https://price-surge.onrender.com/docs" target="_blank" rel="noopener">
           <span class="live-dot"></span> Live API Docs
         </a>
-
-        <!-- EDIT: replace with your LinkedIn or portfolio URL -->
         <a class="cta-btn cta-secondary" href="https://www.linkedin.com/in/laren-sahu-681177309" target="_blank" rel="noopener">
           ↗ LinkedIn
         </a>
-
       </div>
     </section>
 
-  </div><!-- /.container -->
+  </div>
 
-  <!-- ============================================================
-       FOOTER
-       EDIT: project name + your name below
-       ============================================================ -->
   <footer>
     <div class="container footer-inner">
       <span>Price Surge · Zomato Dynamic Pricing Intelligence</span>
@@ -650,32 +515,13 @@
     </div>
   </footer>
 
-
-  <!-- ============================================================
-       PIPELINE DETAIL CONTENT
-       EDIT: each string in PIPELINE_DETAILS corresponds to a node
-       Index 0 = Scraper, 1 = PostgreSQL, 2 = Analytics,
-             3 = FastAPI,  4 = Power BI,  5 = Telegram
-       Use <strong> for bold, <code> for inline code
-       ============================================================ -->
   <script>
     const PIPELINE_DETAILS = [
-      /* 0 — Scraper */
       `<strong>Playwright Scraper</strong> — Runs at 7 fixed clock slots daily (10AM–10PM). Uses iPhone 13 Pro browser emulation with Bhubaneswar geolocation to extract menu data from Zomato's Redux SSR state blob (<code>window.__PRELOADED_STATE__</code>). Double-escaped JSON parsed via <code>.encode('utf-8').decode('unicode_escape')</code>. Requires <code>headless=False</code> to bypass detection — intentionally kept local. Handles network retries (<code>MAX_RETRIES=3</code>, 60s sleep) for Playwright errors like <code>ERR_NETWORK_CHANGED</code>.`,
-
-      /* 1 — PostgreSQL */
       `<strong>PostgreSQL Database</strong> — Stores 72K+ rows across <code>prices</code>, <code>weather</code>, and pre-computed analytics tables. A shared <code>scrape_session_id</code> — generated once per scheduler run and passed via environment variable — enables exact price-weather joins across tables. Backed up via <code>pg_dump</code>; a seed SQL file in the repo lets anyone restore the full dataset instantly.`,
-
-      /* 2 — Analytics */
       `<strong>Analytics Engine</strong> — 10 Python scripts (DPI, rain premium, weekend premium, stability score, synchronized pricing, hourly patterns, category sensitivity, temperature effect, and more) orchestrated as a single atomic PL/pgSQL block in <code>refresh_analytics.sql</code>, executed via <code>run_all.py</code>. All statistical scores (Mann-Whitney U, Kruskal-Wallis, p-values) are pre-computed in Python — not DAX.`,
-
-      /* 3 — FastAPI */
       `<strong>FastAPI Backend</strong> — 10 REST endpoints at <code>src/api/</code> serving pre-computed analytics data. Uses <code>RealDictCursor</code> for native Postgres-to-JSON serialization. <code>Optional[type]=None</code> handles nullable columns cleanly in Pydantic models. Run locally via <code>uvicorn src.api.main:app --reload</code> from the project root. Auto-generates Swagger UI at <code>/docs</code>.`,
-
-      /* 4 — Power BI */
       `<strong>Power BI Dashboard</strong> — 8-page interactive dashboard: Executive Summary, Dynamic Pricing Index leaderboard, Weather Intel, Stability & Volatility, Time Intel, Category Intel, a hidden Drillthrough deep-dive page, and a hidden Restaurant Dive page for per-restaurant deep analysis. Design system: dark navy canvas, Zomato Red primary, Syne + DM Sans fonts. All statistical scores pre-calculated upstream; DAX handles display logic, formatting, and conditional colors only.`,
-
-      /* 5 — Telegram */
       `<strong>Telegram Alert System</strong> — 5 operational alert types (A–E) wired into the scheduler: ✅ scrape success, ❌ scrape failure, ⚠️ no internet detected, 🔄 scrape started, ⏳ waiting for next window. Delivered instantly via the Telegram Bot API. Key fix: PostgreSQL installer sets <code>REQUESTS_CA_BUNDLE</code> env var globally, breaking <code>requests</code> SSL — resolved with <code>verify=False</code> + <code>urllib3.disable_warnings()</code>. <code>TELEGRAM_CHAT_ID</code> must be cast as <code>int()</code>.`
     ];
 
@@ -691,67 +537,54 @@
       }, 120);
     }
 
-    /* Show first node detail on load */
     selectNode(0);
   </script>
 
-  <!-- ============================================================
-       LIVE FINDINGS — fetches from FastAPI on Render
-       Falls back gracefully if API is cold-starting or unreachable.
-       ============================================================ -->
   <script>
     const API = 'https://price-surge.onrender.com';
 
     async function loadFindings() {
       try {
-        // Fetch summary stats and DPI leaderboard in parallel
-        const [summaryRes, dpiRes, weekendRes] = await Promise.all([
-          fetch(`${API}/analysis/summary`,         { signal: AbortSignal.timeout(55000) }),
-          fetch(`${API}/analysis/dpi-scores`,      { signal: AbortSignal.timeout(55000) }),
-          fetch(`${API}/analysis/weekend-premium`, { signal: AbortSignal.timeout(55000) }),
+        const [rankingsRes, weekendRes] = await Promise.all([
+          fetch(`${API}/analysis/restaurant-rankings`, { signal: AbortSignal.timeout(55000) }),
+          fetch(`${API}/analysis/weekend-premium`,     { signal: AbortSignal.timeout(55000) }),
         ]);
 
-        if (!summaryRes.ok || !dpiRes.ok) throw new Error('API error');
+        if (!rankingsRes.ok || !weekendRes.ok) throw new Error('API error');
 
-        const summary = await summaryRes.json();
-        const dpi     = await dpiRes.json();
-        const weekend = weekendRes.ok ? await weekendRes.json() : null;
+        const rankings = await rankingsRes.json();
+        const weekend  = await weekendRes.json();
 
-        // ── Derive stat card values ──────────────────────────────
-        const totalEvents   = summary.total_price_change_events ?? summary.price_change_events ?? '214';
-        const totalRows     = summary.total_rows ?? summary.total_observations ?? '72K+';
-        const staticPct     = summary.static_restaurant_pct != null
-                                ? (summary.static_restaurant_pct * 100).toFixed(1) + '%'
-                                : '73.7%';
-        const weatherEffect = summary.restaurants_with_significant_weather_effect != null
-                                ? `${summary.restaurants_with_significant_weather_effect} / 19`
-                                : '0 / 19';
+        const data        = rankings.data;
+        const weekendData = weekend.data;
 
-        // Top DPI restaurant
-        const sorted   = [...dpi].sort((a, b) => b.dpi_score - a.dpi_score);
-        const topRest  = sorted[0];
-        const topDPI   = topRest ? topRest.dpi_score.toFixed(1) : '54.1';
-        const topName  = topRest ? topRest.restaurant : 'Faasos';
+        // Sort by DPI rank
+        const sorted = [...data].sort((a, b) => a.dpi_rank - b.dpi_rank);
+        const top    = sorted[0];
+        const second = sorted[1];
+
+        // Static restaurants = pvs_normalized === 0
+        const staticCount = data.filter(r => r.pvs_normalized === 0).length;
+        const staticPct   = ((staticCount / data.length) * 100).toFixed(1) + '%';
+
+        // Restaurants with notable temp effect
+        const weatherCount = data.filter(r => Math.abs(r.temp_effect) > 5).length;
 
         // Weekend premium for #2 DPI restaurant
-        let weekendPremium = '18.96%';
-        if (weekend && sorted[1]) {
-          const second = weekend.find(w => w.restaurant === sorted[1].restaurant);
-          if (second?.weekend_premium_pct != null) {
-            weekendPremium = second.weekend_premium_pct.toFixed(2) + '%';
-          }
-        }
-        const secondName = sorted[1]?.restaurant ?? 'Wow! Momo';
+        const secondWeekend  = weekendData.find(w => w.restaurant === second?.restaurant);
+        const weekendPremium = secondWeekend
+          ? secondWeekend.avg_change_weekend.toFixed(2) + '%'
+          : 'N/A';
 
-        // ── Render stat cards ────────────────────────────────────
+        // Render stat cards
         document.getElementById('findingsGrid').innerHTML = `
           <div class="finding-card">
-            <div class="finding-num">${totalEvents}</div>
-            <div class="finding-label">Valid price change events after quality filters</div>
+            <div class="finding-num">${data.length}</div>
+            <div class="finding-label">Restaurants tracked across 5 food categories</div>
           </div>
           <div class="finding-card">
-            <div class="finding-num">${topDPI}</div>
-            <div class="finding-label">${topName} Dynamic Pricing Index — #1 most volatile</div>
+            <div class="finding-num">${top.dpi.toFixed(1)}</div>
+            <div class="finding-label">${top.restaurant} Dynamic Pricing Index — #1 most volatile</div>
           </div>
           <div class="finding-card">
             <div class="finding-num">${staticPct}</div>
@@ -759,54 +592,51 @@
           </div>
           <div class="finding-card">
             <div class="finding-num">${weekendPremium}</div>
-            <div class="finding-label">Weekend price premium for ${secondName} (#2 DPI)</div>
+            <div class="finding-label">Weekend price change avg for ${second?.restaurant} (#2 DPI)</div>
           </div>
           <div class="finding-card">
-            <div class="finding-num">${weatherEffect}</div>
-            <div class="finding-label">Restaurants with significant weather price effect</div>
+            <div class="finding-num">${weatherCount} / ${data.length}</div>
+            <div class="finding-label">Restaurants with notable temperature price effect</div>
           </div>
           <div class="finding-card">
-            <div class="finding-num">${typeof totalRows === 'number' ? totalRows.toLocaleString() + '+' : totalRows}</div>
+            <div class="finding-num">72K+</div>
             <div class="finding-label">Total observations across 19 restaurants</div>
           </div>
         `;
 
-        // Hide the loading status line — data is live
         document.getElementById('findingsStatus').style.display = 'none';
 
-        // ── Render insight bullets (use live names) ──────────────
-        const topEventsCount = topRest?.price_change_events ?? 167;
+        // Render insight bullets
         document.getElementById('insightList').innerHTML = `
           <div class="insight">
             <div class="insight-dot"></div>
-            <span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — ${topName} alone accounts for the majority of all price change events (${topEventsCount} of ${totalEvents}), suggesting the practice is brand-level policy, not a platform-wide norm.</span>
+            <span>Dynamic pricing is <strong>highly concentrated</strong> — ${top.restaurant} holds the #1 DPI at ${top.dpi.toFixed(1)}, classified as <em>${top.pricing_behavior}</em>, while ${staticPct} of the market remains completely static.</span>
           </div>
           <div class="insight">
             <div class="insight-dot"></div>
-            <span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span>
+            <span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all ${data.length} restaurants).</span>
           </div>
           <div class="insight">
             <div class="insight-dot"></div>
-            <span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — ${secondName} shows a ${weekendPremium} weekend uplift while most competitors remain fully static.</span>
+            <span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — ${second?.restaurant} shows a ${weekendPremium} weekend avg price change while most competitors remain fully static.</span>
           </div>
         `;
 
       } catch (err) {
-        // API cold-starting or unreachable — fall back to hardcoded values silently
         console.warn('Findings API unavailable, falling back to static data.', err);
 
         document.getElementById('findingsGrid').innerHTML = `
-          <div class="finding-card"><div class="finding-num">214</div><div class="finding-label">Valid price change events after quality filters</div></div>
-          <div class="finding-card"><div class="finding-num">54.1</div><div class="finding-label">Faasos Dynamic Pricing Index — #1 most volatile</div></div>
+          <div class="finding-card"><div class="finding-num">19</div><div class="finding-label">Restaurants tracked across 5 food categories</div></div>
+          <div class="finding-card"><div class="finding-num">59.7</div><div class="finding-label">Faasos Dynamic Pricing Index — #1 most volatile</div></div>
           <div class="finding-card"><div class="finding-num">73.7%</div><div class="finding-label">Of market shows zero dynamic pricing activity</div></div>
-          <div class="finding-card"><div class="finding-num">18.96%</div><div class="finding-label">Weekend price premium for Wow! Momo (#2 DPI)</div></div>
-          <div class="finding-card"><div class="finding-num">0 / 19</div><div class="finding-label">Restaurants with significant weather price effect</div></div>
+          <div class="finding-card"><div class="finding-num">6.09%</div><div class="finding-label">Weekend price change avg for Wow! Momo (#2 DPI)</div></div>
+          <div class="finding-card"><div class="finding-num">0 / 19</div><div class="finding-label">Restaurants with notable temperature price effect</div></div>
           <div class="finding-card"><div class="finding-num">72K+</div><div class="finding-label">Total observations across 19 restaurants</div></div>
         `;
         document.getElementById('insightList').innerHTML = `
-          <div class="insight"><div class="insight-dot"></div><span>Dynamic pricing on Zomato is <strong>highly concentrated</strong> — Faasos alone accounts for the majority of all price change events (167 of 214), suggesting the practice is brand-level policy, not a platform-wide norm.</span></div>
+          <div class="insight"><div class="insight-dot"></div><span>Dynamic pricing is <strong>highly concentrated</strong> — Faasos leads with a DPI of 59.7, classified as Moderate Dynamic, while 73.7% of the market remains completely static.</span></div>
           <div class="insight"><div class="insight-dot"></div><span>Despite popular belief, <strong>rain and temperature have no statistically significant effect</strong> on restaurant pricing in this market — confirmed via Mann-Whitney U and Kruskal-Wallis tests (p &gt; 0.05 across all 19 restaurants).</span></div>
-          <div class="insight"><div class="insight-dot"></div><span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — Wow! Momo shows an 18.96% weekend uplift while most competitors remain fully static.</span></div>
+          <div class="insight"><div class="insight-dot"></div><span>Weekend pricing premiums exist but are <strong>restaurant-specific, not market-wide</strong> — Wow! Momo shows a 6.09% weekend avg price change while most competitors remain fully static.</span></div>
         `;
         document.getElementById('findingsStatus').style.display = 'none';
         document.getElementById('findingsError').style.display = 'block';
