@@ -2,27 +2,69 @@
   "recent_logs": [
     {
       "status": "success",
-      "session_id": "20260623_1432",
-      "time": "2026-06-23 14:57:49",
+      "session_id": "20260628_1021",
+      "time": "2026-06-28 10:45:28",
+      "duration_minutes": 24
+    },
+    {
+      "status": "success",
+      "session_id": "20260628_1200",
+      "time": "2026-06-28 12:26:27",
       "duration_minutes": 25
     },
     {
       "status": "success",
-      "session_id": "20260623_1600",
-      "time": "2026-06-23 16:26:57",
+      "session_id": "20260628_1400",
+      "time": "2026-06-28 14:26:39",
       "duration_minutes": 26
     },
     {
       "status": "success",
-      "session_id": "20260623_1800",
-      "time": "2026-06-23 18:27:32",
+      "session_id": "20260628_1600",
+      "time": "2026-06-28 16:27:04",
       "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260628_1800",
+      "time": "2026-06-28 18:26:37",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260629_1415",
+      "time": "2026-06-29 14:41:22",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260629_1600",
+      "time": "2026-06-29 16:26:25",
+      "duration_minutes": 25
+    },
+    {
+      "status": "success",
+      "session_id": "20260629_1800",
+      "time": "2026-06-29 18:26:34",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260629_2000",
+      "time": "2026-06-29 20:26:45",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260629_2200",
+      "time": "2026-06-29 22:26:48",
+      "duration_minutes": 25
     }
   ],
   "last_status": "success",
-  "last_session_id": "20260623_1800",
-  "last_scrape_time": "2026-06-23 18:27:32",
-  "last_duration_minutes": 26,
+  "last_session_id": "20260629_2200",
+  "last_scrape_time": "2026-06-29 22:26:48",
+  "last_duration_minutes": 25,
   "restaurants_scraped": 19,
   "last_error_type": null
 }
