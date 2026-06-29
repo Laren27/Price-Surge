@@ -1,20 +1,20 @@
 restaurant,category,rpi,wpi,temp_effect,pvs_normalized,dpi,dpi_rank,pricing_behavior
-Faasos,rolls,-38.2,8.0,5.55,100.0,61.7,1,Moderate Dynamic
-Wow! Momo,momos,-1.4,5.63,3.06,47.64,31.49,2,Low Dynamic
-Behrouz Biryani,biryani,0.0,4.62,4.62,0.52,7.96,3,Static Pricer
-Biriyani Box,biryani,0.0,0.0,3.52,3.66,4.18,4,Static Pricer
-Burger Singh,fried_chicken,0.0,-20.08,-20.08,6.28,3.14,5,Static Pricer
-Kake Di Hatti,paneer,0.0,0.0,-5.73,6.28,3.14,5,Static Pricer
-Burnt,momos,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Darjeeling Kitchen,momos,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Kake Da Minar,paneer,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-KFC,fried_chicken,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Mughlai House,biryani,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Rolls World,rolls,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Taste of China,momos,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Truptee Legacy,paneer,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Biggies Burger,fried_chicken,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Biryani By Kilo,biryani,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Zam Zam Grills,rolls,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Bob's Momo,momos,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
-Burger King,fried_chicken,0.0,0.0,0.0,0.0,0.0,7,Static Pricer
+Faasos,rolls,-38.2,14.82,6.27,100.0,69.0,1,Moderate Dynamic
+Wow! Momo,momos,1.22,3.76,2.19,58.82,35.85,2,Low Dynamic
+Darjeeling Kitchen,momos,0.0,0.0,13.55,38.01,28.04,3,Low Dynamic
+Biriyani Box,biryani,0.0,4.71,3.69,4.07,9.21,4,Static Pricer
+Behrouz Biryani,biryani,1.23,4.62,0.85,2.71,7.77,5,Static Pricer
+Burger Singh,fried_chicken,-24.43,-21.32,-15.79,10.41,5.21,6,Static Pricer
+Kake Di Hatti,paneer,0.0,0.0,-5.73,5.43,2.72,7,Static Pricer
+Mughlai House,biryani,0.0,-13.24,-13.24,0.45,0.23,8,Static Pricer
+Biryani By Kilo,biryani,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Kake Da Minar,paneer,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+KFC,fried_chicken,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Rolls World,rolls,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Taste of China,momos,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Truptee Legacy,paneer,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Biggies Burger,fried_chicken,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Burger King,fried_chicken,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Zam Zam Grills,rolls,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Burnt,momos,0.0,0.0,0.0,0.0,0.0,9,Static Pricer
+Bob's Momo,momos,0.0,0.0,0.0,0.0,0.0,9,Static Pricer

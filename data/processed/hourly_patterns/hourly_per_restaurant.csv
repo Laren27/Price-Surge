@@ -1,13 +1,13 @@
 restaurant,restaurant_category,hour_of_day,total_change_events,avg_price_change_pct
 Behrouz Biryani,biryani,10,0,0.0
 Behrouz Biryani,biryani,11,0,0.0
-Behrouz Biryani,biryani,12,0,0.0
+Behrouz Biryani,biryani,12,2,1.23
 Behrouz Biryani,biryani,13,0,0.0
-Behrouz Biryani,biryani,14,0,0.0
+Behrouz Biryani,biryani,14,2,1.23
 Behrouz Biryani,biryani,15,0,0.0
 Behrouz Biryani,biryani,16,1,4.62
 Behrouz Biryani,biryani,17,0,0.0
-Behrouz Biryani,biryani,18,0,0.0
+Behrouz Biryani,biryani,18,1,-4.42
 Behrouz Biryani,biryani,19,0,0.0
 Behrouz Biryani,biryani,20,0,0.0
 Behrouz Biryani,biryani,21,0,0.0
@@ -33,9 +33,9 @@ Biriyani Box,biryani,14,2,-4.49
 Biriyani Box,biryani,15,0,0.0
 Biriyani Box,biryani,16,1,21.54
 Biriyani Box,biryani,17,0,0.0
-Biriyani Box,biryani,18,0,0.0
+Biriyani Box,biryani,18,1,4.71
 Biriyani Box,biryani,19,0,0.0
-Biriyani Box,biryani,20,1,21.54
+Biriyani Box,biryani,20,2,8.53
 Biriyani Box,biryani,21,0,0.0
 Biriyani Box,biryani,22,2,-17.72
 Biryani By Kilo,biryani,10,0,0.0
@@ -79,9 +79,9 @@ Burger King,fried_chicken,21,0,0.0
 Burger King,fried_chicken,22,0,0.0
 Burger Singh,fried_chicken,10,0,0.0
 Burger Singh,fried_chicken,11,0,0.0
-Burger Singh,fried_chicken,12,11,-20.08
+Burger Singh,fried_chicken,12,18,-20.08
 Burger Singh,fried_chicken,13,0,0.0
-Burger Singh,fried_chicken,14,1,-20.08
+Burger Singh,fried_chicken,14,5,-0.33
 Burger Singh,fried_chicken,15,0,0.0
 Burger Singh,fried_chicken,16,0,0.0
 Burger Singh,fried_chicken,17,0,0.0
@@ -107,7 +107,7 @@ Darjeeling Kitchen,momos,10,0,0.0
 Darjeeling Kitchen,momos,11,0,0.0
 Darjeeling Kitchen,momos,12,0,0.0
 Darjeeling Kitchen,momos,13,0,0.0
-Darjeeling Kitchen,momos,14,0,0.0
+Darjeeling Kitchen,momos,14,84,13.55
 Darjeeling Kitchen,momos,15,0,0.0
 Darjeeling Kitchen,momos,16,0,0.0
 Darjeeling Kitchen,momos,17,0,0.0
@@ -118,17 +118,17 @@ Darjeeling Kitchen,momos,21,0,0.0
 Darjeeling Kitchen,momos,22,0,0.0
 Faasos,rolls,10,0,0.0
 Faasos,rolls,11,0,0.0
-Faasos,rolls,12,9,8.9
+Faasos,rolls,12,10,14.19
 Faasos,rolls,13,0,0.0
-Faasos,rolls,14,40,9.3
+Faasos,rolls,14,44,9.37
 Faasos,rolls,15,2,9.12
 Faasos,rolls,16,1,-38.2
 Faasos,rolls,17,0,0.0
-Faasos,rolls,18,126,4.86
+Faasos,rolls,18,135,6.23
 Faasos,rolls,19,0,0.0
-Faasos,rolls,20,3,-28.21
+Faasos,rolls,20,8,-34.46
 Faasos,rolls,21,1,-8.24
-Faasos,rolls,22,9,8.9
+Faasos,rolls,22,20,9.7
 Kake Da Minar,paneer,10,0,0.0
 Kake Da Minar,paneer,11,0,0.0
 Kake Da Minar,paneer,12,0,0.0
@@ -176,7 +176,7 @@ Mughlai House,biryani,14,0,0.0
 Mughlai House,biryani,15,0,0.0
 Mughlai House,biryani,16,0,0.0
 Mughlai House,biryani,17,0,0.0
-Mughlai House,biryani,18,0,0.0
+Mughlai House,biryani,18,1,-13.24
 Mughlai House,biryani,19,0,0.0
 Mughlai House,biryani,20,0,0.0
 Mughlai House,biryani,21,0,0.0
@@ -222,17 +222,17 @@ Truptee Legacy,paneer,21,0,0.0
 Truptee Legacy,paneer,22,0,0.0
 Wow! Momo,momos,10,2,-11.14
 Wow! Momo,momos,11,2,15.52
-Wow! Momo,momos,12,13,4.94
+Wow! Momo,momos,12,17,6.19
 Wow! Momo,momos,13,0,0.0
-Wow! Momo,momos,14,13,0.06
+Wow! Momo,momos,14,18,4.69
 Wow! Momo,momos,15,2,12.81
-Wow! Momo,momos,16,18,1.72
+Wow! Momo,momos,16,28,-0.01
 Wow! Momo,momos,17,1,-23.33
-Wow! Momo,momos,18,11,6.6
+Wow! Momo,momos,18,20,-5.19
 Wow! Momo,momos,19,2,25.51
-Wow! Momo,momos,20,13,-2.67
+Wow! Momo,momos,20,18,2.38
 Wow! Momo,momos,21,2,15.52
-Wow! Momo,momos,22,12,5.05
+Wow! Momo,momos,22,18,4.69
 Zam Zam Grills,rolls,10,0,0.0
 Zam Zam Grills,rolls,11,0,0.0
 Zam Zam Grills,rolls,12,0,0.0
