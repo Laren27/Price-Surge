@@ -2,36 +2,6 @@
   "recent_logs": [
     {
       "status": "success",
-      "session_id": "20260714_2200",
-      "time": "2026-07-14 22:27:53",
-      "duration_minutes": 27
-    },
-    {
-      "status": "success",
-      "session_id": "20260715_1000",
-      "time": "2026-07-15 10:26:22",
-      "duration_minutes": 25
-    },
-    {
-      "status": "success",
-      "session_id": "20260715_1200",
-      "time": "2026-07-15 12:26:47",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260715_1400",
-      "time": "2026-07-15 14:27:06",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260715_1600",
-      "time": "2026-07-15 16:26:28",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
       "session_id": "20260715_1800",
       "time": "2026-07-15 18:27:21",
       "duration_minutes": 26
@@ -59,11 +29,41 @@
       "session_id": "20260716_1200",
       "time": "2026-07-16 12:27:18",
       "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260716_1400",
+      "time": "2026-07-16 14:26:36",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260716_1600",
+      "time": "2026-07-16 16:26:53",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260716_1800",
+      "time": "2026-07-16 18:27:24",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260716_2000",
+      "time": "2026-07-16 20:27:08",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260716_2200",
+      "time": "2026-07-16 22:26:40",
+      "duration_minutes": 26
     }
   ],
   "last_status": "success",
-  "last_session_id": "20260716_1200",
-  "last_scrape_time": "2026-07-16 12:27:18",
+  "last_session_id": "20260716_2200",
+  "last_scrape_time": "2026-07-16 22:26:40",
   "last_duration_minutes": 26,
   "restaurants_scraped": 19,
   "last_error_type": null
