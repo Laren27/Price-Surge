@@ -1,4 +1,4 @@
 restaurant_a,restaurant_b,correlation,strength
 Behrouz Biryani,Faasos,1.0,Strong
-Burger Singh,Wow! Momo,1.0,Strong
 Behrouz Biryani,Wow! Momo,-1.0,Strong
+Burger Singh,Wow! Momo,-1.0,Strong
