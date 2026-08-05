@@ -1,20 +1,20 @@
 restaurant,restaurant_category,price_change_events,cv_pct,avg_price,pvs_normalized
-Behrouz Biryani,biryani,12,3.0396,705.83,4.55
+Behrouz Biryani,biryani,14,2.8277,734.29,4.38
 Biggies Burger,fried_chicken,0,0.0,0.0,0.0
-Biriyani Box,biryani,12,14.949,79.17,4.55
+Biriyani Box,biryani,59,6.928,225.81,18.44
 Biryani By Kilo,biryani,0,0.0,0.0,0.0
 Bob's Momo,momos,0,0.0,0.0,0.0
 Burger King,fried_chicken,0,0.0,0.0,0.0
-Burger Singh,fried_chicken,23,14.1649,202.48,8.71
+Burger Singh,fried_chicken,23,14.1649,202.48,7.19
 Burnt,momos,0,0.0,0.0,0.0
-Darjeeling Kitchen,momos,84,10.1911,191.0,31.82
-Faasos,rolls,264,15.3887,258.14,100.0
+Darjeeling Kitchen,momos,84,10.1911,191.0,26.25
+Faasos,rolls,320,14.4324,263.53,100.0
 Kake Da Minar,paneer,0,0.0,0.0,0.0
-Kake Di Hatti,paneer,17,4.4401,301.29,6.44
+Kake Di Hatti,paneer,23,3.9898,323.48,7.19
 KFC,fried_chicken,0,0.0,0.0,0.0
-Mughlai House,biryani,1,0.0,190.0,0.38
+Mughlai House,biryani,1,0.0,190.0,0.31
 Rolls World,rolls,0,0.0,0.0,0.0
-Taste of China,momos,149,4.8564,257.62,56.44
+Taste of China,momos,149,4.8564,257.62,46.56
 Truptee Legacy,paneer,0,0.0,0.0,0.0
-Wow! Momo,momos,194,18.8029,181.79,73.48
+Wow! Momo,momos,248,19.696,179.84,77.5
 Zam Zam Grills,rolls,0,0.0,0.0,0.0
