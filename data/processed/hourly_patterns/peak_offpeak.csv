@@ -1,7 +1,7 @@
 restaurant,restaurant_category,time_window,total_change_events,avg_price_change_pct
 Behrouz Biryani,biryani,1-Morning Off-Peak,0,0.0
 Behrouz Biryani,biryani,2-Lunch Peak,2,1.23
-Behrouz Biryani,biryani,3-Afternoon Off-Peak,10,2.63
+Behrouz Biryani,biryani,3-Afternoon Off-Peak,12,2.39
 Behrouz Biryani,biryani,4-Dinner Peak,0,0.0
 Behrouz Biryani,biryani,5-Late Night Off-Peak,0,0.0
 Biggies Burger,fried_chicken,1-Morning Off-Peak,0,0.0
@@ -10,9 +10,9 @@ Biggies Burger,fried_chicken,3-Afternoon Off-Peak,0,0.0
 Biggies Burger,fried_chicken,4-Dinner Peak,0,0.0
 Biggies Burger,fried_chicken,5-Late Night Off-Peak,0,0.0
 Biriyani Box,biryani,1-Morning Off-Peak,0,0.0
-Biriyani Box,biryani,2-Lunch Peak,1,4.71
-Biriyani Box,biryani,3-Afternoon Off-Peak,6,5.72
-Biriyani Box,biryani,4-Dinner Peak,2,8.53
+Biriyani Box,biryani,2-Lunch Peak,2,0.11
+Biriyani Box,biryani,3-Afternoon Off-Peak,31,4.63
+Biriyani Box,biryani,4-Dinner Peak,23,4.72
 Biriyani Box,biryani,5-Late Night Off-Peak,3,-17.72
 Biryani By Kilo,biryani,1-Morning Off-Peak,0,0.0
 Biryani By Kilo,biryani,2-Lunch Peak,0,0.0
@@ -45,10 +45,10 @@ Darjeeling Kitchen,momos,3-Afternoon Off-Peak,84,13.55
 Darjeeling Kitchen,momos,4-Dinner Peak,0,0.0
 Darjeeling Kitchen,momos,5-Late Night Off-Peak,0,0.0
 Faasos,rolls,1-Morning Off-Peak,0,0.0
-Faasos,rolls,2-Lunch Peak,11,9.43
-Faasos,rolls,3-Afternoon Off-Peak,195,7.58
-Faasos,rolls,4-Dinner Peak,17,-10.5
-Faasos,rolls,5-Late Night Off-Peak,41,8.06
+Faasos,rolls,2-Lunch Peak,15,8.45
+Faasos,rolls,3-Afternoon Off-Peak,217,6.47
+Faasos,rolls,4-Dinner Peak,29,-5.9
+Faasos,rolls,5-Late Night Off-Peak,59,8.09
 Kake Da Minar,paneer,1-Morning Off-Peak,0,0.0
 Kake Da Minar,paneer,2-Lunch Peak,0,0.0
 Kake Da Minar,paneer,3-Afternoon Off-Peak,0,0.0
@@ -57,7 +57,7 @@ Kake Da Minar,paneer,5-Late Night Off-Peak,0,0.0
 Kake Di Hatti,paneer,1-Morning Off-Peak,0,0.0
 Kake Di Hatti,paneer,2-Lunch Peak,0,0.0
 Kake Di Hatti,paneer,3-Afternoon Off-Peak,1,-5.73
-Kake Di Hatti,paneer,4-Dinner Peak,16,8.72
+Kake Di Hatti,paneer,4-Dinner Peak,22,7.76
 Kake Di Hatti,paneer,5-Late Night Off-Peak,0,0.0
 KFC,fried_chicken,1-Morning Off-Peak,0,0.0
 KFC,fried_chicken,2-Lunch Peak,0,0.0
@@ -85,10 +85,10 @@ Truptee Legacy,paneer,3-Afternoon Off-Peak,0,0.0
 Truptee Legacy,paneer,4-Dinner Peak,0,0.0
 Truptee Legacy,paneer,5-Late Night Off-Peak,0,0.0
 Wow! Momo,momos,1-Morning Off-Peak,4,2.19
-Wow! Momo,momos,2-Lunch Peak,22,10.15
-Wow! Momo,momos,3-Afternoon Off-Peak,101,-0.19
-Wow! Momo,momos,4-Dinner Peak,31,4.85
-Wow! Momo,momos,5-Late Night Off-Peak,36,0.37
+Wow! Momo,momos,2-Lunch Peak,35,5.14
+Wow! Momo,momos,3-Afternoon Off-Peak,122,0.25
+Wow! Momo,momos,4-Dinner Peak,40,5.85
+Wow! Momo,momos,5-Late Night Off-Peak,47,2.32
 Zam Zam Grills,rolls,1-Morning Off-Peak,0,0.0
 Zam Zam Grills,rolls,2-Lunch Peak,0,0.0
 Zam Zam Grills,rolls,3-Afternoon Off-Peak,0,0.0
