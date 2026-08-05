@@ -2,69 +2,69 @@
   "recent_logs": [
     {
       "status": "success",
-      "session_id": "20260715_1800",
-      "time": "2026-07-15 18:27:21",
+      "session_id": "20260802_1800",
+      "time": "2026-08-02 18:27:09",
       "duration_minutes": 26
     },
     {
       "status": "success",
-      "session_id": "20260715_2000",
-      "time": "2026-07-15 20:27:05",
-      "duration_minutes": 26
+      "session_id": "20260802_2000",
+      "time": "2026-08-02 20:30:28",
+      "duration_minutes": 29
+    },
+    {
+      "status": "failure",
+      "session_id": "20260802_2200",
+      "time": "2026-08-02 22:03:01",
+      "duration_minutes": null
     },
     {
       "status": "success",
-      "session_id": "20260715_2200",
-      "time": "2026-07-15 22:26:10",
+      "session_id": "20260804_1000",
+      "time": "2026-08-04 10:25:53",
       "duration_minutes": 25
     },
     {
       "status": "success",
-      "session_id": "20260716_1000",
-      "time": "2026-07-16 10:25:57",
+      "session_id": "20260804_1200",
+      "time": "2026-08-04 12:27:17",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260804_1400",
+      "time": "2026-08-04 14:27:05",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260804_1600",
+      "time": "2026-08-04 16:26:55",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260804_1800",
+      "time": "2026-08-04 18:27:27",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260804_2000",
+      "time": "2026-08-04 20:27:12",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260804_2200",
+      "time": "2026-08-04 22:26:00",
       "duration_minutes": 25
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_1200",
-      "time": "2026-07-16 12:27:18",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_1400",
-      "time": "2026-07-16 14:26:36",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_1600",
-      "time": "2026-07-16 16:26:53",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_1800",
-      "time": "2026-07-16 18:27:24",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_2000",
-      "time": "2026-07-16 20:27:08",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
-      "session_id": "20260716_2200",
-      "time": "2026-07-16 22:26:40",
-      "duration_minutes": 26
     }
   ],
   "last_status": "success",
-  "last_session_id": "20260716_2200",
-  "last_scrape_time": "2026-07-16 22:26:40",
-  "last_duration_minutes": 26,
+  "last_session_id": "20260804_2200",
+  "last_scrape_time": "2026-08-04 22:26:00",
+  "last_duration_minutes": 25,
   "restaurants_scraped": 19,
   "last_error_type": null
 }
