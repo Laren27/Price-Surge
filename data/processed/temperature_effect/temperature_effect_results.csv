@@ -1,14 +1,14 @@
 restaurant,category,cool_records,normal_records,hot_records,avg_price_hot,avg_price_normal,temp_effect_score,significant,verdict
-Behrouz Biryani,biryani,0,4,10,1.61,3.76,1.61,True,Price rises in heat
+Behrouz Biryani,biryani,0,12,25,2.89,1.84,2.89,True,Price rises in heat
 Biggies Burger,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
-Biriyani Box,biryani,0,51,8,2.66,3.48,2.66,True,Price rises in heat
+Biriyani Box,biryani,0,54,10,-0.09,3.38,-0.09,True,Price drops in heat
 Biryani By Kilo,biryani,0,0,0,0.0,0.0,0.0,False,No significant change
 Bob's Momo,momos,0,0,0,0.0,0.0,0.0,False,No significant change
 Burger King,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
 Burger Singh,fried_chicken,0,0,23,-15.79,0.0,-15.79,True,Price drops in heat
 Burnt,momos,0,0,0,0.0,0.0,0.0,False,No significant change
-Darjeeling Kitchen,momos,0,0,84,13.55,0.0,13.55,True,Price rises in heat
-Faasos,rolls,0,116,204,5.02,7.01,5.02,True,Price rises in heat
+Darjeeling Kitchen,momos,0,129,84,13.55,-8.19,13.55,True,Price rises in heat
+Faasos,rolls,0,199,220,5.22,7.11,5.22,True,Price rises in heat
 Kake Da Minar,paneer,0,0,0,0.0,0.0,0.0,False,No significant change
 Kake Di Hatti,paneer,0,22,1,-5.73,7.76,-5.73,False,No significant change
 KFC,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
@@ -16,5 +16,5 @@ Mughlai House,biryani,0,0,1,-13.24,0.0,-13.24,False,No significant change
 Rolls World,rolls,0,0,0,0.0,0.0,0.0,False,No significant change
 Taste of China,momos,0,149,0,0.0,14.65,0.0,False,No significant change
 Truptee Legacy,paneer,0,0,0,0.0,0.0,0.0,False,No significant change
-Wow! Momo,momos,0,157,91,1.74,2.57,1.74,True,Price rises in heat
+Wow! Momo,momos,0,194,131,3.85,2.21,3.85,True,Price rises in heat
 Zam Zam Grills,rolls,0,0,0,0.0,0.0,0.0,False,No significant change
