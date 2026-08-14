@@ -1,17 +1,16 @@
 restaurant_a,restaurant_b,correlation,strength
 Behrouz Biryani,Burger Singh,1.0,Strong
 Behrouz Biryani,Darjeeling Kitchen,1.0,Strong
-Biriyani Box,Burger Singh,1.0,Strong
-Faasos,Kake Di Hatti,1.0,Strong
+Kake Di Hatti,Wow! Momo,1.0,Strong
 Darjeeling Kitchen,Faasos,1.0,Strong
 Darjeeling Kitchen,Wow! Momo,1.0,Strong
-Burger Singh,Wow! Momo,1.0,Strong
+Faasos,Kake Di Hatti,1.0,Strong
 Biriyani Box,Kake Di Hatti,1.0,Strong
-Kake Di Hatti,Wow! Momo,1.0,Strong
-Behrouz Biryani,Faasos,0.5347,Moderate
-Biriyani Box,Faasos,-0.4079,Moderate
-Biriyani Box,Wow! Momo,-0.5126,Moderate
-Behrouz Biryani,Biriyani Box,-0.5336,Moderate
+Behrouz Biryani,Faasos,0.5699,Moderate
+Behrouz Biryani,Biriyani Box,-0.465,Moderate
+Biriyani Box,Wow! Momo,-0.5423,Moderate
 Behrouz Biryani,Kake Di Hatti,-1.0,Strong
 Biriyani Box,Darjeeling Kitchen,-1.0,Strong
+Biriyani Box,Burger Singh,-1.0,Strong
+Burger Singh,Wow! Momo,-1.0,Strong
 Burger Singh,Faasos,-1.0,Strong
