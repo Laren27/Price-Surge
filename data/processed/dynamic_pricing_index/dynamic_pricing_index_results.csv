@@ -1,13 +1,13 @@
 restaurant,category,rpi,wpi,temp_effect,pvs_normalized,dpi,dpi_rank,pricing_behavior
-Faasos,rolls,8.1,16.91,5.22,100.0,78.49,1,Aggressive Dynamic
-Wow! Momo,momos,1.73,3.94,3.85,77.57,47.02,2,Low Dynamic
-Darjeeling Kitchen,momos,0.0,0.0,13.55,50.84,34.45,3,Low Dynamic
-Behrouz Biryani,biryani,7.32,10.04,2.89,8.83,23.7,4,Static Pricer
-Taste of China,momos,0.0,0.0,0.0,35.56,17.78,5,Static Pricer
-Kake Di Hatti,paneer,9.01,0.0,-5.73,5.49,11.76,6,Static Pricer
-Biriyani Box,biryani,-11.11,3.38,-0.09,15.27,11.02,7,Static Pricer
-Burger Singh,fried_chicken,-24.43,-21.32,-15.79,5.49,2.75,8,Static Pricer
-Mughlai House,biryani,0.0,-13.24,-13.24,0.24,0.12,9,Static Pricer
+Faasos,rolls,4.57,14.38,4.65,100.0,72.05,1,Moderate Dynamic
+Wow! Momo,momos,1.27,3.59,3.73,74.58,44.64,2,Low Dynamic
+Darjeeling Kitchen,momos,0.0,0.0,13.55,45.13,31.6,3,Low Dynamic
+Behrouz Biryani,biryani,5.5,7.74,2.89,10.38,20.36,4,Static Pricer
+Taste of China,momos,0.0,0.0,0.0,31.57,15.79,5,Static Pricer
+Kake Di Hatti,paneer,9.01,0.0,-5.73,4.87,11.45,6,Static Pricer
+Biriyani Box,biryani,-11.11,2.17,-1.93,13.98,9.16,7,Static Pricer
+Burger Singh,fried_chicken,-24.43,-21.32,-15.79,4.87,2.44,8,Static Pricer
+Mughlai House,biryani,0.0,-13.24,-13.24,0.21,0.11,9,Static Pricer
 KFC,fried_chicken,0.0,0.0,0.0,0.0,0.0,10,Static Pricer
 Rolls World,rolls,0.0,0.0,0.0,0.0,0.0,10,Static Pricer
 Truptee Legacy,paneer,0.0,0.0,0.0,0.0,0.0,10,Static Pricer
