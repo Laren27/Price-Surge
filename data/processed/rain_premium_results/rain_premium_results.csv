@@ -1,20 +1,20 @@
 restaurant,category,rainy_records,clear_records,avg_change_rain,avg_change_clear,rpi,significant,verdict
-Behrouz Biryani,biryani,16,33,5.5,1.07,5.5,True,Surge confirmed
+Behrouz Biryani,biryani,16,36,5.5,0.79,5.5,True,Surge confirmed
 Biggies Burger,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
-Biriyani Box,biryani,2,64,-11.11,2.84,-11.11,False,No significant change
+Biriyani Box,biryani,3,65,-0.22,2.52,-0.22,False,No significant change
 Biryani By Kilo,biryani,0,0,0.0,0.0,0.0,False,No significant change
 Bob's Momo,momos,0,0,0.0,0.0,0.0,False,No significant change
 Burger King,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
-Burger Singh,fried_chicken,2,21,-24.43,-14.96,-24.43,False,No significant change
+Burger Singh,fried_chicken,2,40,-24.43,-9.71,-24.43,False,No significant change
 Burnt,momos,0,0,0.0,0.0,0.0,False,No significant change
 Darjeeling Kitchen,momos,0,213,0.0,0.38,0.0,False,No significant change
-Faasos,rolls,59,412,4.57,5.78,4.57,True,Surge confirmed
+Faasos,rolls,59,424,4.57,5.91,4.57,True,Surge confirmed
 Kake Da Minar,paneer,0,0,0.0,0.0,0.0,False,No significant change
-Kake Di Hatti,paneer,5,18,9.01,6.66,9.01,True,Surge confirmed
+Kake Di Hatti,paneer,9,18,9.26,6.66,9.26,True,Surge confirmed
 KFC,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
 Mughlai House,biryani,0,1,0.0,-13.24,0.0,False,No significant change
 Rolls World,rolls,0,0,0.0,0.0,0.0,False,No significant change
 Taste of China,momos,0,149,0.0,14.65,0.0,False,No significant change
 Truptee Legacy,paneer,0,0,0.0,0.0,0.0,False,No significant change
-Wow! Momo,momos,66,283,1.27,3.03,1.27,True,Surge confirmed
+Wow! Momo,momos,78,297,0.76,2.85,0.76,True,Surge confirmed
 Zam Zam Grills,rolls,0,0,0.0,0.0,0.0,False,No significant change
