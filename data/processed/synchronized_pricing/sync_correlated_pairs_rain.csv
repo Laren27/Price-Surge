@@ -1,3 +1,6 @@
 restaurant_a,restaurant_b,correlation,strength
+Behrouz Biryani,Biriyani Box,1.0,Strong
 Behrouz Biryani,Burger Singh,1.0,Strong
+Kake Di Hatti,Wow! Momo,1.0,Strong
+Biriyani Box,Wow! Momo,-1.0,Strong
 Burger Singh,Wow! Momo,-1.0,Strong
