@@ -1,20 +1,20 @@
 restaurant,category,weekend_records,weekday_records,avg_change_weekend,avg_change_weekday,wpi,significant,verdict
-Behrouz Biryani,biryani,10,39,7.74,1.18,7.74,True,Weekend premium confirmed
+Behrouz Biryani,biryani,10,42,7.74,0.93,7.74,True,Weekend premium confirmed
 Biggies Burger,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
-Biriyani Box,biryani,24,42,2.17,2.56,2.17,True,Weekend premium confirmed
+Biriyani Box,biryani,24,44,2.17,2.53,2.17,True,Weekend premium confirmed
 Biryani By Kilo,biryani,0,0,0.0,0.0,0.0,False,No significant change
 Bob's Momo,momos,0,0,0.0,0.0,0.0,False,No significant change
 Burger King,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
-Burger Singh,fried_chicken,7,16,-21.32,-13.36,-21.32,True,Cheaper on weekends
+Burger Singh,fried_chicken,7,35,-21.32,-8.22,-21.32,True,Cheaper on weekends
 Burnt,momos,0,0,0.0,0.0,0.0,False,No significant change
 Darjeeling Kitchen,momos,0,213,0.0,0.38,0.0,False,No significant change
-Faasos,rolls,37,435,14.38,4.79,14.38,True,Weekend premium confirmed
+Faasos,rolls,37,447,14.38,4.93,14.38,True,Weekend premium confirmed
 Kake Da Minar,paneer,0,0,0.0,0.0,0.0,False,No significant change
-Kake Di Hatti,paneer,0,23,0.0,7.17,0.0,False,No significant change
+Kake Di Hatti,paneer,4,23,9.57,7.17,9.57,True,Weekend premium confirmed
 KFC,fried_chicken,0,0,0.0,0.0,0.0,False,No significant change
 Mughlai House,biryani,1,0,-13.24,0.0,-13.24,False,No significant change
 Rolls World,rolls,0,0,0.0,0.0,0.0,False,No significant change
 Taste of China,momos,0,149,0.0,14.65,0.0,False,No significant change
 Truptee Legacy,paneer,0,0,0.0,0.0,0.0,False,No significant change
-Wow! Momo,momos,89,263,3.59,2.4,3.59,True,Weekend premium confirmed
+Wow! Momo,momos,98,280,3.14,2.17,3.14,True,Weekend premium confirmed
 Zam Zam Grills,rolls,0,0,0.0,0.0,0.0,False,No significant change
