@@ -2,36 +2,6 @@
   "recent_logs": [
     {
       "status": "success",
-      "session_id": "20260825_1600",
-      "time": "2026-08-25 16:27:43",
-      "duration_minutes": 27
-    },
-    {
-      "status": "failure",
-      "session_id": "20260825_1800",
-      "time": "2026-08-25 18:04:38",
-      "duration_minutes": null
-    },
-    {
-      "status": "failure",
-      "session_id": "20260825_2000",
-      "time": "2026-08-25 20:01:51",
-      "duration_minutes": null
-    },
-    {
-      "status": "failure",
-      "session_id": "20260825_2200",
-      "time": "2026-08-25 22:02:15",
-      "duration_minutes": null
-    },
-    {
-      "status": "success",
-      "session_id": "20260826_1253",
-      "time": "2026-08-26 13:21:06",
-      "duration_minutes": 27
-    },
-    {
-      "status": "success",
       "session_id": "20260826_1600",
       "time": "2026-08-26 16:27:19",
       "duration_minutes": 27
@@ -59,12 +29,42 @@
       "session_id": "20260829_1800",
       "time": "2026-08-29 18:27:37",
       "duration_minutes": 27
+    },
+    {
+      "status": "success",
+      "session_id": "20260829_2000",
+      "time": "2026-08-29 20:27:38",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260829_2200",
+      "time": "2026-08-29 22:26:58",
+      "duration_minutes": 26
+    },
+    {
+      "status": "success",
+      "session_id": "20260830_1800",
+      "time": "2026-08-30 18:28:06",
+      "duration_minutes": 27
+    },
+    {
+      "status": "success",
+      "session_id": "20260830_2000",
+      "time": "2026-08-30 20:27:35",
+      "duration_minutes": 27
+    },
+    {
+      "status": "success",
+      "session_id": "20260830_2200",
+      "time": "2026-08-30 22:27:20",
+      "duration_minutes": 26
     }
   ],
   "last_status": "success",
-  "last_session_id": "20260829_1800",
-  "last_scrape_time": "2026-08-29 18:27:37",
-  "last_duration_minutes": 27,
+  "last_session_id": "20260830_2200",
+  "last_scrape_time": "2026-08-30 22:27:20",
+  "last_duration_minutes": 26,
   "restaurants_scraped": 19,
   "last_error_type": null
 }
