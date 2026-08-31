@@ -1,11 +1,11 @@
 restaurant,category,rpi,wpi,temp_effect,pvs_normalized,dpi,dpi_rank,pricing_behavior
 Faasos,rolls,4.57,14.38,4.65,100.0,72.05,1,Moderate Dynamic
-Wow! Momo,momos,0.76,3.14,3.65,78.1,45.38,2,Low Dynamic
+Wow! Momo,momos,0.45,2.59,3.65,79.55,45.25,2,Low Dynamic
 Darjeeling Kitchen,momos,0.0,0.0,13.55,44.01,31.04,3,Low Dynamic
 Kake Di Hatti,paneer,9.26,9.57,-5.73,5.58,21.62,4,Static Pricer
 Behrouz Biryani,biryani,5.5,7.74,2.89,10.74,20.54,5,Static Pricer
 Taste of China,momos,0.0,0.0,0.0,30.79,15.4,6,Static Pricer
-Biriyani Box,biryani,-0.22,2.17,-1.93,14.05,9.2,7,Static Pricer
+Biriyani Box,biryani,-0.22,2.17,-1.93,14.26,9.3,7,Static Pricer
 Burger Singh,fried_chicken,-24.43,-21.32,-10.41,8.68,4.34,8,Static Pricer
 Mughlai House,biryani,0.0,-13.24,-13.24,0.21,0.11,9,Static Pricer
 Kake Da Minar,paneer,0.0,0.0,0.0,0.0,0.0,10,Static Pricer
