@@ -12,7 +12,7 @@ Biggies Burger,fried_chicken,5-Late Night Off-Peak,0,0.0
 Biriyani Box,biryani,1-Morning Off-Peak,0,0.0
 Biriyani Box,biryani,2-Lunch Peak,4,-5.5
 Biriyani Box,biryani,3-Afternoon Off-Peak,36,4.23
-Biriyani Box,biryani,4-Dinner Peak,24,3.78
+Biriyani Box,biryani,4-Dinner Peak,25,4.31
 Biriyani Box,biryani,5-Late Night Off-Peak,4,-14.41
 Biryani By Kilo,biryani,1-Morning Off-Peak,0,0.0
 Biryani By Kilo,biryani,2-Lunch Peak,0,0.0
@@ -86,9 +86,9 @@ Truptee Legacy,paneer,4-Dinner Peak,0,0.0
 Truptee Legacy,paneer,5-Late Night Off-Peak,0,0.0
 Wow! Momo,momos,1-Morning Off-Peak,4,2.19
 Wow! Momo,momos,2-Lunch Peak,50,6.35
-Wow! Momo,momos,3-Afternoon Off-Peak,196,0.65
-Wow! Momo,momos,4-Dinner Peak,63,5.42
-Wow! Momo,momos,5-Late Night Off-Peak,65,1.84
+Wow! Momo,momos,3-Afternoon Off-Peak,198,0.75
+Wow! Momo,momos,4-Dinner Peak,65,4.97
+Wow! Momo,momos,5-Late Night Off-Peak,68,1.42
 Zam Zam Grills,rolls,1-Morning Off-Peak,0,0.0
 Zam Zam Grills,rolls,2-Lunch Peak,0,0.0
 Zam Zam Grills,rolls,3-Afternoon Off-Peak,0,0.0
