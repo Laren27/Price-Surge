@@ -1,7 +1,7 @@
 restaurant,category,cool_records,normal_records,hot_records,avg_price_hot,avg_price_normal,temp_effect_score,significant,verdict
 Behrouz Biryani,biryani,0,27,25,2.89,1.64,2.89,True,Price rises in heat
 Biggies Burger,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
-Biriyani Box,biryani,0,56,12,-1.93,3.33,-1.93,True,Price drops in heat
+Biriyani Box,biryani,0,57,12,-1.93,3.57,-1.93,True,Price drops in heat
 Biryani By Kilo,biryani,0,0,0,0.0,0.0,0.0,False,No significant change
 Bob's Momo,momos,0,0,0,0.0,0.0,0.0,False,No significant change
 Burger King,fried_chicken,0,0,0,0.0,0.0,0.0,False,No significant change
@@ -16,5 +16,5 @@ Mughlai House,biryani,0,0,1,-13.24,0.0,-13.24,False,No significant change
 Rolls World,rolls,0,0,0,0.0,0.0,0.0,False,No significant change
 Taste of China,momos,0,149,0,0.0,14.65,0.0,False,No significant change
 Truptee Legacy,paneer,0,0,0,0.0,0.0,0.0,False,No significant change
-Wow! Momo,momos,0,241,137,3.65,1.72,3.65,True,Price rises in heat
+Wow! Momo,momos,0,248,137,3.65,1.59,3.65,True,Price rises in heat
 Zam Zam Grills,rolls,0,0,0,0.0,0.0,0.0,False,No significant change
