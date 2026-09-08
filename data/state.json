@@ -2,12 +2,6 @@
   "recent_logs": [
     {
       "status": "success",
-      "session_id": "20260829_2000",
-      "time": "2026-08-29 20:27:38",
-      "duration_minutes": 26
-    },
-    {
-      "status": "success",
       "session_id": "20260829_2200",
       "time": "2026-08-29 22:26:58",
       "duration_minutes": 26
@@ -59,12 +53,18 @@
       "session_id": "20260907_2000",
       "time": "2026-09-07 20:25:22",
       "duration_minutes": 25
+    },
+    {
+      "status": "success",
+      "session_id": "20260907_2200",
+      "time": "2026-09-07 22:25:04",
+      "duration_minutes": 24
     }
   ],
   "last_status": "success",
-  "last_session_id": "20260907_2000",
-  "last_scrape_time": "2026-09-07 20:25:22",
-  "last_duration_minutes": 25,
+  "last_session_id": "20260907_2200",
+  "last_scrape_time": "2026-09-07 22:25:04",
+  "last_duration_minutes": 24,
   "restaurants_scraped": 19,
   "last_error_type": null
 }
