@@ -1,6 +1,6 @@
 restaurant,category,rpi,wpi,temp_effect,pvs_normalized,dpi,dpi_rank,pricing_behavior
 Faasos,rolls,4.57,14.38,4.65,100.0,72.05,1,Moderate Dynamic
-Wow! Momo,momos,0.45,2.59,3.65,79.55,45.25,2,Low Dynamic
+Wow! Momo,momos,0.45,2.59,3.79,80.99,46.06,2,Low Dynamic
 Darjeeling Kitchen,momos,0.0,0.0,13.55,44.01,31.04,3,Low Dynamic
 Kake Di Hatti,paneer,9.26,9.57,-5.73,5.58,21.62,4,Static Pricer
 Behrouz Biryani,biryani,5.5,7.74,2.89,10.74,20.54,5,Static Pricer
